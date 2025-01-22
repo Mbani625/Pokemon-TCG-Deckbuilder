@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokémon TCG Deckbuilder</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Pokémon TCG Deckbuilder</h1>
+    </header>
+    <main>
+      <section id="deck-info">
+        <label for="deck-name">Deck Name:</label>
+        <input type="text" id="deck-name" placeholder="Enter deck name" />
+
+        <label for="deck-format">Format:</label>
+        <select id="deck-format">
+          <option value="standard">Standard</option>
+          <option value="expanded">Expanded</option>
+        </select>
+      </section>
+
+      <section id="card-search">
+        <h2>Search Cards</h2>
+        <label for="card-type">Card Type:</label>
+        <select id="card-type">
+          <option value="">Select Type</option>
+          <option value="pokemon">Pokémon</option>
+          <option value="trainer">Trainer</option>
+          <option value="energy">Energy</option>
+        </select>
+
+        <label for="card-set">Set:</label>
+        <select id="card-set">
+          <option value="">Select Set</option>
+        </select>
+
+        <label for="card-detail">Detail:</label>
+        <select id="card-detail">
+          <option value="">All</option>
+        </select>
+
+        <input
+          type="text"
+          id="card-name"
+          placeholder="Card Name (Autocomplete)"
+        />
+        <div id="autocomplete-results"></div>
+
+        <button id="search-button">Search</button>
+        <div id="notification-area"></div>
+      </section>
+
+      <section id="search-results">
+        <h2>Search Results</h2>
+        <div id="results-grid"></div>
+      </section>
+
+      <section id="deck-list">
+        <h2>Your Deck</h2>
+        <div id="deck-grid"></div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
