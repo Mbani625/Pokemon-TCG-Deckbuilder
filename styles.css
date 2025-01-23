@@ -1,3 +1,4 @@
+/* General Styles */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -13,39 +14,51 @@ header {
 }
 
 main {
-  padding: 1rem;
-  max-width: 1200px;
-  margin: auto;
+  padding: 30px;
 }
 
-section {
-  margin-bottom: 2rem;
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-#results-grid,
-#deck-grid {
+h2 {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
 }
 
-.card {
-  width: 150px;
-  text-align: center;
+li {
+  margin: 5px;
+  text-align: left;
 }
 
-.card img {
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* Search Section */
+#search-section {
+  margin-bottom: 40px;
+}
+
+#card-search-bar {
+  display: flex;
+  gap: 10px;
+  padding: 1rem;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+#card-search-bar select,
+#card-search-bar input,
+#card-search-bar button {
+  padding: 0.5rem;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#card-search-bar button.clicked {
+  background-color: #0056b3;
+  color: white;
+  transition: background-color 0.2s;
 }
 
 #autocomplete-results {
-  position: absolute;
+  position: fixed;
   background: white;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -54,6 +67,8 @@ section {
   z-index: 1000;
   display: none;
   border-radius: 4px;
+  width: 20%;
+  margin-top: 40px;
 }
 
 .autocomplete-item {
@@ -67,30 +82,210 @@ section {
   color: white;
 }
 
-#autocomplete-results div {
-  padding: 8px;
+/* Search Results */
+#results-grid,
+#deck-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.filter-button {
+  background-color: #0078d7;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
   cursor: pointer;
   font-size: 14px;
-  font-family: Arial, sans-serif;
 }
 
-#autocomplete-results div:hover {
-  background: #0078d7;
+.filter-button:hover {
+  background-color: #0056b3;
+}
+
+.filter-button.active {
+  background-color: #004494;
+  font-weight: bold;
+}
+
+/* Your Deck Section */
+#deck-section {
+  margin-top: 20px;
+}
+
+#deck-section button,
+#search-section button {
+  padding: 6px 12px;
+  margin: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #0078d7;
   color: white;
-}
-
-.notification {
-  margin-top: 16px;
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  background-color: #f9f9f9;
+  border: none;
   border-radius: 4px;
-  font-size: 14px;
-  color: #555;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.notification.error {
-  border-color: #f44336;
-  background-color: #fdecea;
-  color: #f44336;
+#deck-section button:hover {
+  background-color: #0056b3;
+}
+
+#deck-section .remove-button {
+  padding: 6px 12px;
+  margin: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #ff4b45;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#deck-section .remove-button:hover {
+  background-color: #d1403b;
+}
+
+.reorder-button {
+  background-color: #0078d7;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 20px;
+}
+
+.reorder-button:hover {
+  background-color: #0056b3;
+}
+
+/* Card Styles */
+.card {
+  position: relative;
+  width: 250px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.card-stack {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.stacked-card {
+  position: absolute;
+  width: 100%;
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.card-info {
+  position: relative;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.card-info button {
+  margin-top: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.card-info button:hover {
+  background-color: #d93636;
+}
+
+/* Overlay for Expanded Views */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.expanded-card-container {
+  width: 660px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: white;
+  justify-items: center;
+}
+
+.expanded-card-container img {
+  height: 600px;
+  margin: auto;
+}
+
+.expanded-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  max-height: 80%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.details-list {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  gap: 20px;
+  width: fit-content;
+}
+
+.add-button {
+  background-color: #0078d7;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 20px auto;
+  display: inline-flex;
+  text-align: center;
+}
+
+.add-button:hover {
+  background-color: #0056b3;
 }
