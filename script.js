@@ -121,27 +121,27 @@ async function fetchLegalSets(format) {
 
 // Search Function
 searchButton.addEventListener("click", async () => {
-  searchButton.classList.add("clicked");
-  setTimeout(() => searchButton.classList.remove("clicked"), 200);
+  // Clear previous results
+  resultsGrid.innerHTML = "";
+  const resultsCount = document.getElementById("results-count");
+  resultsCount.textContent = "(0)";
 
-  autocompleteResults.style.display = "none";
-
-  const format = formatSelect.value; // Get the selected format
-  const cardType = cardTypeSelect.value;
-  const detailType = typeDetailSelect.value;
-  const pokemonName = cardNameInput.value.trim();
+  const pokemonName = cardNameInput.value.trim(); // Full card name typed in
+  const format = formatSelect.value; // Selected format
+  const cardType = cardTypeSelect.value; // Selected card type
 
   try {
-    // Step 1: Fetch All Cards Matching Card Name
-    const nameQuery = pokemonName ? `name:${pokemonName}` : "";
-    const typeQuery = cardType ? `supertype:${cardType}` : "";
-    const subtypeQuery = detailType ? `subtypes:${detailType}` : "";
-    const query = [nameQuery, typeQuery, subtypeQuery]
-      .filter(Boolean)
-      .join(" ");
+    // Construct the base query
+    let query = `legalities.${format}:legal AND supertype:${cardType}`;
 
-    console.log("Initial query:", query); // Debug: Log the initial query
+    // Add card name filter if provided
+    if (pokemonName) {
+      query += ` AND name:"${pokemonName}"`;
+    }
 
+    console.log("Search Query:", query); // Debugging: Log the query being sent to the API
+
+    // Fetch data from API
     const response = await fetch(
       `https://api.pokemontcg.io/v2/cards?q=${query}`,
       {
@@ -150,52 +150,50 @@ searchButton.addEventListener("click", async () => {
     );
     const data = await response.json();
 
-    console.log("All cards matching query:", data.data); // Debug: Log fetched cards
+    const cards = data.data;
+    resultsCount.textContent = `(${cards.length})`;
 
-    // Step 2: Fetch Legal Sets
-    const legalSets = await fetchLegalSets(format);
-
-    if (legalSets.length === 0) {
+    // Handle no results
+    if (cards.length === 0) {
       resultsGrid.innerHTML =
-        "<p>No legal sets available for the selected format.</p>";
+        "<p>No cards match your search criteria in the selected format and type.</p>";
       return;
     }
 
-    // Step 3: Filter Cards by Legal Sets
-    const filteredCards = data.data.filter((card) =>
-      legalSets.includes(card.set.id)
-    );
-
-    console.log("Filtered cards:", filteredCards); // Debug: Log filtered cards
-
-    // Step 4: Display Results
-    const resultsCount = document.getElementById("results-count");
-    resultsCount.textContent = `(${filteredCards.length})`;
-
-    if (filteredCards.length === 0) {
-      resultsGrid.innerHTML =
-        "<p>No cards match your search criteria in legal sets.</p>";
-      return;
-    }
-
-    resultsGrid.innerHTML = "";
-    filteredCards.forEach((card) => {
+    // Display results
+    cards.forEach((card) => {
       const cardDiv = document.createElement("div");
       cardDiv.className = "card";
       cardDiv.dataset.id = card.id;
       cardDiv.dataset.type = card.supertype.toLowerCase();
+      cardDiv.dataset.rarity = card.rarity
+        ? card.rarity.toLowerCase()
+        : "unknown"; // Add rarity to the search result card
+
+      // Ensure card image is displayed correctly
+      const imageUrl = card.images?.small || ""; // Use a fallback empty string if image URL is missing
 
       cardDiv.innerHTML = `
-              <div class="card-image-container">
-                  <img src="${card.images.small}" alt="${card.name}" onclick="displayCardOverlay('${card.id}', '${card.images.large}')">
-              </div>
-            <p><strong>${card.name}</strong></p> 
-            <li><strong>Rarity:</strong> ${card.rarity}</li>
-              <div class="button-container">
-                  <button class="add-button" onclick="addToDeck('${card.id}', '${card.name}', '${card.images.small}', '${card.supertype}')">Add to Deck</button>
-                  <button class="add-button" onclick="displayCardOverlay('${card.id}', '${card.images.large}')">More Info</button>
-              </div>
-          `;
+        <div class="card-image-container">
+          <img src="${imageUrl}" alt="${
+        card.name
+      }" onclick="displayCardOverlay('${card.id}', '${
+        card.images?.large || imageUrl
+      }')">
+        </div>
+        <p><strong>${card.name}</strong></p>
+        <li><strong>Rarity:</strong> ${card.rarity || "Unknown"}</li>
+        <div class="button-container">
+          <button class="add-button" onclick="addToDeck('${card.id}', '${
+        card.name
+      }', '${imageUrl}', '${card.supertype}', '${
+        card.rarity
+      }')">Add to Deck</button>
+          <button class="add-button" onclick="displayCardOverlay('${
+            card.id
+          }', '${card.images?.large || imageUrl}')">More Info</button>
+        </div>
+      `;
       resultsGrid.appendChild(cardDiv);
     });
   } catch (error) {
@@ -281,40 +279,71 @@ async function displayCardOverlay(cardId, imageUrl) {
 }
 
 // Add to Deck Functionality
-function addToDeck(id, name, image, supertype) {
+function addToDeck(id, name, image, supertype, rarity) {
+  // Check if the card being added is an Ace Spec card
+  const isAceSpec = rarity && rarity.toLowerCase() === "ace spec rare";
+
+  // Check for existing Ace Spec cards in the deck
+  if (isAceSpec) {
+    const aceSpecInDeck = Array.from(deckGrid.children).some((card) => {
+      const cardRarity = card.dataset.rarity || ""; // Safely check for dataset.rarity
+      return cardRarity.toLowerCase() === "ace spec rare";
+    });
+
+    if (aceSpecInDeck) {
+      alert("You can only have one Ace Spec card in your deck.");
+      return; // Prevent adding the new Ace Spec card
+    }
+  }
+
   const existingCard = document.querySelector(
     `#deck-grid .card[data-id="${id}"]`
   );
+
   if (existingCard) {
     const count = existingCard.querySelector(".count");
     const currentCount = parseInt(count.textContent);
 
-    if (currentCount < 4) {
-      count.textContent = currentCount + 1;
-      const stackedImage = document.createElement("img");
-      stackedImage.src = image;
-      stackedImage.alt = `${name} (Stacked)`;
-      stackedImage.className = "stacked-card";
-      stackedImage.style.transform = `translateY(${currentCount * 10}px)`;
-      existingCard.querySelector(".card-stack").appendChild(stackedImage);
+    // Standard 4-card limit, except for Basic Energy
+    const isBasicEnergy =
+      supertype.toLowerCase() === "energy" &&
+      name.toLowerCase().includes("basic");
+
+    if (!isBasicEnergy && currentCount >= 4) {
+      alert(`You can't add more than 4 copies of ${name} to your deck.`);
+      return;
     }
+
+    // Increment count for the card
+    count.textContent = currentCount + 1;
+
+    // Add stacked image for visual effect
+    const stackedImage = document.createElement("img");
+    stackedImage.src = image;
+    stackedImage.alt = `${name} (Stacked)`;
+    stackedImage.className = "stacked-card";
+    stackedImage.style.transform = `translateY(${currentCount * 10}px)`;
+    existingCard.querySelector(".card-stack").appendChild(stackedImage);
   } else {
+    // Create new card entry in the deck
     const cardDiv = document.createElement("div");
     cardDiv.className = "card";
     cardDiv.dataset.id = id;
     cardDiv.dataset.type = supertype.toLowerCase();
+    cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown"; // Ensure rarity is always set
 
     cardDiv.innerHTML = `
-          <div class="card-stack">
-              <img src="${image}" alt="${name}" onclick="displayCardOverlay('${id}', '${image}')">
-          </div>
-          <div class="card-info">
-              <p>${name}</p>
-              <p>Count: <span class="count">1</span></p>
-              <button class="add-button" onclick="displayCardOverlay('${id}', '${image}')">More Info</button>
-              <button class="remove-button" onclick="removeFromDeck('${id}', '${name}')">Remove 1</button>
-          </div>
-      `;
+      <div class="card-info">
+        <p>${name} [<span class="count">1</span>]</p>
+        <div class="button-container">
+          <button class="add-button" onclick="displayCardOverlay('${id}', '${image}')">More Info</button>
+          <button class="remove-button" onclick="removeFromDeck('${id}', '${name}')">Remove 1</button>
+        </div>
+      </div>  
+      <div class="card-stack">
+        <img src="${image}" alt="${name}" onclick="displayCardOverlay('${id}', '${image}')">
+      </div>
+    `;
     deckGrid.appendChild(cardDiv);
   }
 }

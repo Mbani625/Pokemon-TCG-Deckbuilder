@@ -1,9 +1,21 @@
 /* General Styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure body takes up full viewport height */
+}
+
+footer {
+  background-color: #0078d7;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  position: relative;
+  bottom: 0;
+  width: 100%;
 }
 
 header {
@@ -15,6 +27,11 @@ header {
 
 main {
   padding: 30px;
+  min-height: calc(100vh - 200px); /* Adjust to fit footer and header spacing */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
 }
 
 h2 {
@@ -26,6 +43,10 @@ h2 {
 li {
   margin: 5px;
   text-align: left;
+}
+
+p {
+  margin: 2px;
 }
 
 /* Search Section */
@@ -83,14 +104,13 @@ li {
 }
 
 /* Search Results */
-#results-grid,
-#deck-grid {
+#results-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
+  height: auto;
   padding: 1rem;
-  background-color: white;
   border-radius: 4px;
 }
 
@@ -115,7 +135,9 @@ li {
 
 /* Your Deck Section */
 #deck-section {
+  height: auto;
   margin-top: 20px;
+  padding-bottom: 50px; /* Prevent stack from touching the footer */
 }
 
 #deck-section button,
@@ -153,6 +175,18 @@ li {
   background-color: #d1403b;
 }
 
+#deck-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  overflow: auto; /* Allow scrolling if content overflows */
+  max-height: calc(100vh - 250px); /* Ensure it fits within the viewport */
+}
+
 .reorder-button {
   background-color: #0078d7;
   color: white;
@@ -171,9 +205,11 @@ li {
 /* Card Styles */
 .card {
   position: relative;
+  height: auto;
   width: 250px;
   text-align: center;
-  padding: 10px;
+  overflow: visible; /* Ensure the card container allows stacked cards to display fully */
+  padding: 10px; /* Add extra padding to account for taller stacks */
   border-radius: 8px;
 }
 
@@ -187,11 +223,11 @@ li {
 .card-stack {
   position: relative;
   width: 100%;
-  height: 400px;
+  height: auto; /* Allow dynamic height based on the number of stacked cards */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  margin-bottom: 10px; /* Add spacing between card stack and card info */
 }
 
 .stacked-card {
@@ -204,8 +240,12 @@ li {
 
 .card-info {
   position: relative;
-  margin-top: 10px;
   text-align: center;
+  margin-bottom: 10px;
+  padding: 3px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card-info button {
