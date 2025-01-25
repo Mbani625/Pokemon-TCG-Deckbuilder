@@ -98,6 +98,11 @@ header.dark-mode {
   color: #f0f0f0;
 }
 
+.button-container {
+  width: 80%;
+  justify-self: center;
+}
+
 /* Search Section */
 #search-section {
   margin-bottom: 40px;
