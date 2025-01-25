@@ -554,5 +554,6 @@ body.dark-mode .add-button:hover {
     padding: 8px;
     font-size: 16px;
     margin: auto;
+    justify-self: center;
   }
 }
