@@ -6,11 +6,14 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensure body takes up full viewport height */
+  background-color: #dbdbdb;
+  color: #000000;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 footer {
   background-color: #0078d7;
-  color: white;
+  color: rgb(255, 255, 255);
   text-align: center;
   padding: 1rem 0;
   position: relative;
@@ -23,6 +26,11 @@ header {
   color: white;
   text-align: center;
   padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
 }
 
 main {
@@ -47,6 +55,47 @@ li {
 
 p {
   margin: 2px;
+}
+
+#dark-mode-toggle {
+  cursor: pointer;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0078d7;
+  color: #ffffff;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#dark-mode-toggle:hover {
+  background-color: #005bb5;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+header.dark-mode {
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #333;
+}
+
+#dark-mode-toggle.dark-mode {
+  background-color: #444444;
+  color: #f0f0f0;
+}
+
+.card.dark-mode {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+}
+
+.card-info.dark-mode {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
 }
 
 /* Search Section */
@@ -200,6 +249,28 @@ p {
 
 .reorder-button:hover {
   background-color: #0056b3;
+}
+
+#your-deck h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#your-deck button {
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0078d7;
+  color: #ffffff;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#your-deck button:hover {
+  background-color: #005bb5;
 }
 
 /* Card Styles */

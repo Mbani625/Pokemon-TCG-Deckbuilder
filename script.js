@@ -10,6 +10,32 @@ const deckGrid = document.getElementById("deck-grid");
 const pokemonCatalog = []; // Holds unique Pokémon names
 const trainerCatalog = []; // Holds unique Trainer card names
 
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleButton = document.getElementById("dark-mode-toggle");
+  const body = document.body;
+
+  // Check for saved preference in localStorage
+  if (localStorage.getItem("darkMode") === "enabled") {
+    body.classList.add("dark-mode");
+    toggleButton.classList.add("dark-mode");
+    toggleButton.textContent = "☀️ Light Mode";
+  }
+
+  // Toggle Dark Mode
+  toggleButton.addEventListener("click", () => {
+    body.classList.toggle("dark-mode");
+    toggleButton.classList.toggle("dark-mode");
+
+    if (body.classList.contains("dark-mode")) {
+      localStorage.setItem("darkMode", "enabled");
+      toggleButton.textContent = "☀️ Light Mode";
+    } else {
+      localStorage.setItem("darkMode", "disabled");
+      toggleButton.textContent = "🌙 Dark Mode";
+    }
+  });
+});
+
 // Fetch unique Pokémon names
 const fetchPokemonCatalog = async () => {
   try {
@@ -168,30 +194,30 @@ searchButton.addEventListener("click", async () => {
       cardDiv.dataset.type = card.supertype.toLowerCase();
       cardDiv.dataset.rarity = card.rarity
         ? card.rarity.toLowerCase()
-        : "unknown"; // Add rarity to the search result card
-
-      // Ensure card image is displayed correctly
-      const imageUrl = card.images?.small || ""; // Use a fallback empty string if image URL is missing
+        : "unknown"; // Rarity
+      cardDiv.dataset.setId = card.set?.id || "Unknown Set"; // Set ID
+      cardDiv.dataset.cardNumber = card.number || "Unknown Number"; // Card number
 
       cardDiv.innerHTML = `
         <div class="card-image-container">
-          <img src="${imageUrl}" alt="${
+          <img src="${card.images?.small || ""}" alt="${
         card.name
       }" onclick="displayCardOverlay('${card.id}', '${
-        card.images?.large || imageUrl
+        card.images?.large || ""
       }')">
         </div>
         <p><strong>${card.name}</strong></p>
-        <li><strong>Rarity:</strong> ${card.rarity || "Unknown"}</li>
+        <li><strong>Set:</strong> ${card.set?.name || "Unknown Set"}</li>
+        <li><strong>Number:</strong> ${card.number || "Unknown Number"}</li>
         <div class="button-container">
           <button class="add-button" onclick="addToDeck('${card.id}', '${
         card.name
-      }', '${imageUrl}', '${card.supertype}', '${
+      }', '${card.images?.small || ""}', '${card.supertype}', '${
         card.rarity
-      }')">Add to Deck</button>
+      }', '${card.set?.id}', '${card.number}')">Add to Deck</button>
           <button class="add-button" onclick="displayCardOverlay('${
             card.id
-          }', '${card.images?.large || imageUrl}')">More Info</button>
+          }', '${card.images?.large || ""}')">More Info</button>
         </div>
       `;
       resultsGrid.appendChild(cardDiv);
@@ -279,8 +305,8 @@ async function displayCardOverlay(cardId, imageUrl) {
 }
 
 // Add to Deck Functionality
-function addToDeck(id, name, image, supertype, rarity) {
-  // Check if the card being added is an Ace Spec card
+function addToDeck(id, name, image, supertype, rarity, setId, cardNumber) {
+  // Check if the card is an Ace Spec card
   const isAceSpec = rarity && rarity.toLowerCase() === "ace spec rare";
 
   // Check for existing Ace Spec cards in the deck
@@ -296,6 +322,77 @@ function addToDeck(id, name, image, supertype, rarity) {
     }
   }
 
+  // Check total copies of the card with the same name in the deck
+  const totalCopiesWithName = Array.from(deckGrid.children).reduce(
+    (count, card) => {
+      const cardName = card
+        .querySelector(".card-info p")
+        ?.textContent.split(" [")[0]
+        .trim(); // Extract the card name
+      return cardName?.toLowerCase() === name.toLowerCase()
+        ? count + parseInt(card.querySelector(".count").textContent)
+        : count;
+    },
+    0
+  );
+
+  if (totalCopiesWithName >= 4) {
+    alert(`You cannot have more than 4 copies of "${name}" in your deck.`);
+    return; // Prevent adding more copies
+  }
+
+  // Check if the card is Basic Energy
+  const isBasicEnergy =
+    supertype.toLowerCase() === "energy" &&
+    name.toLowerCase().includes("basic");
+
+  if (isBasicEnergy) {
+    // Allow unlimited copies of Basic Energy cards
+    const existingCard = document.querySelector(
+      `#deck-grid .card[data-id="${id}"]`
+    );
+    if (existingCard) {
+      const count = existingCard.querySelector(".count");
+      const currentCount = parseInt(count.textContent);
+
+      // Increment count for the Basic Energy card
+      count.textContent = currentCount + 1;
+
+      // Add stacked image for visual effect
+      const stackedImage = document.createElement("img");
+      stackedImage.src = image;
+      stackedImage.alt = `${name} (Stacked)`;
+      stackedImage.className = "stacked-card";
+      stackedImage.style.transform = `translateY(${currentCount * 10}px)`;
+      existingCard.querySelector(".card-stack").appendChild(stackedImage);
+    } else {
+      // Create new Basic Energy card entry in the deck
+      const cardDiv = document.createElement("div");
+      cardDiv.className = "card";
+      cardDiv.dataset.id = id;
+      cardDiv.dataset.type = supertype.toLowerCase();
+      cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown"; // Ensure rarity is always set
+      cardDiv.dataset.setId = setId || "Unknown Set"; // Include set ID
+      cardDiv.dataset.cardNumber = cardNumber || "Unknown Number"; // Include card number
+
+      cardDiv.innerHTML = `
+        <div class="card-info">
+          <p>${name} [<span class="count">1</span>]</p>
+          <div class="button-container">
+            <button class="add-button" onclick="displayCardOverlay('${id}', '${image}')">More Info</button>
+            <button class="remove-button" onclick="removeFromDeck('${id}', '${name}')">Remove 1</button>
+          </div>
+        </div>  
+        <div class="card-stack">
+          <img src="${image}" alt="${name}" onclick="displayCardOverlay('${id}', '${image}')">
+        </div>
+      `;
+      deckGrid.appendChild(cardDiv);
+    }
+    return; // Skip the remaining checks for Basic Energy
+  }
+
+  // For non-Basic Energy cards, enforce the 4-card limit
   const existingCard = document.querySelector(
     `#deck-grid .card[data-id="${id}"]`
   );
@@ -304,13 +401,8 @@ function addToDeck(id, name, image, supertype, rarity) {
     const count = existingCard.querySelector(".count");
     const currentCount = parseInt(count.textContent);
 
-    // Standard 4-card limit, except for Basic Energy
-    const isBasicEnergy =
-      supertype.toLowerCase() === "energy" &&
-      name.toLowerCase().includes("basic");
-
-    if (!isBasicEnergy && currentCount >= 4) {
-      alert(`You can't add more than 4 copies of ${name} to your deck.`);
+    if (currentCount >= 4) {
+      alert(`You cannot have more than 4 copies of "${name}" in your deck.`);
       return;
     }
 
@@ -331,6 +423,8 @@ function addToDeck(id, name, image, supertype, rarity) {
     cardDiv.dataset.id = id;
     cardDiv.dataset.type = supertype.toLowerCase();
     cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown"; // Ensure rarity is always set
+    cardDiv.dataset.setId = setId || "Unknown Set"; // Include set ID
+    cardDiv.dataset.cardNumber = cardNumber || "Unknown Number"; // Include card number
 
     cardDiv.innerHTML = `
       <div class="card-info">
@@ -407,6 +501,88 @@ function getTypeFromName(name) {
   if (name.toLowerCase().includes("energy")) return "energy";
   return "pokemon";
 }
+
+document.getElementById("export-text").addEventListener("click", () => {
+  const deckGrid = document.getElementById("deck-grid");
+  const deckCards = Array.from(deckGrid.children);
+
+  // Construct the decklist as text
+  const deckText = deckCards.map((card) => {
+    const count = card.querySelector(".count").textContent; // Number of copies
+    const name = card
+      .querySelector(".card-info p")
+      .textContent.split(" [")[0]
+      .trim(); // Card name
+    const setId = card.dataset.setId || "Unknown Set"; // Set ID
+    const cardNumber = card.dataset.cardNumber || "Unknown Number"; // Card number
+
+    return `${count} ${name} ${setId} ${cardNumber}`;
+  });
+
+  // If the deck is empty, show an alert
+  if (deckText.length === 0) {
+    alert("Your deck is empty. Add cards before exporting.");
+    return;
+  }
+
+  // Create and download the text file
+  const blob = new Blob([deckText.join("\n")], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "decklist.txt";
+  link.click();
+});
+
+document.getElementById("copy-decklist").addEventListener("click", () => {
+  const deckGrid = document.getElementById("deck-grid");
+  const deckCards = Array.from(deckGrid.children);
+
+  // Construct the decklist as text
+  const deckText = deckCards.map((card) => {
+    const count = card.querySelector(".count").textContent; // Number of copies
+    const name = card
+      .querySelector(".card-info p")
+      .textContent.split(" [")[0]
+      .trim(); // Card name
+    const setId = card.dataset.setId || "Unknown Set"; // Set ID
+    const cardNumber = card.dataset.cardNumber || "Unknown Number"; // Card number
+
+    return `${count} ${name} ${setId} ${cardNumber}`;
+  });
+
+  // If the deck is empty, show an alert
+  if (deckText.length === 0) {
+    alert("Your deck is empty. Add cards before copying.");
+    return;
+  }
+
+  // Copy the decklist to the clipboard
+  const deckString = deckText.join("\n");
+  navigator.clipboard
+    .writeText(deckString)
+    .then(() => {
+      alert("Decklist copied to clipboard!");
+    })
+    .catch((err) => {
+      console.error("Failed to copy decklist: ", err);
+      alert("Failed to copy decklist. Please try again.");
+    });
+});
+
+document.getElementById("clear-decklist").addEventListener("click", () => {
+  const deckGrid = document.getElementById("deck-grid");
+
+  // Confirm before clearing the deck
+  if (
+    confirm(
+      "Are you sure you want to clear your decklist? This action cannot be undone."
+    )
+  ) {
+    // Remove all cards from the deck
+    deckGrid.innerHTML = "";
+    alert("Your decklist has been cleared.");
+  }
+});
 
 // Initialize Views on Load
 window.onload = async () => {
