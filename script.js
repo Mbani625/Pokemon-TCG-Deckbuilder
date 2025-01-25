@@ -10,6 +10,30 @@ const deckGrid = document.getElementById("deck-grid");
 const pokemonCatalog = []; // Holds unique Pokémon names
 const trainerCatalog = []; // Holds unique Trainer card names
 
+const setCache = {}; // Cache to store setId -> ptcgoCode mappings
+
+async function fetchAndCacheSets() {
+  try {
+    const response = await fetch("https://api.pokemontcg.io/v2/sets", {
+      headers: { "X-Api-Key": apiKey },
+    });
+    const data = await response.json();
+
+    data.data.forEach((set) => {
+      if (set.id && set.ptcgoCode) {
+        setCache[set.id] = set.ptcgoCode; // Map setId to ptcgoCode
+      }
+    });
+
+    console.log("Set Cache:", setCache); // Debug: Verify cache content
+  } catch (error) {
+    console.error("Failed to fetch and cache sets:", error);
+  }
+}
+
+// Fetch and cache sets on page load
+document.addEventListener("DOMContentLoaded", fetchAndCacheSets);
+
 document.addEventListener("DOMContentLoaded", () => {
   const toggleButton = document.getElementById("dark-mode-toggle");
   const body = document.body;
@@ -147,56 +171,50 @@ async function fetchLegalSets(format) {
 
 // Search Function
 searchButton.addEventListener("click", async () => {
-  // Clear previous results
   resultsGrid.innerHTML = "";
   const resultsCount = document.getElementById("results-count");
   resultsCount.textContent = "(0)";
 
-  const pokemonName = cardNameInput.value.trim(); // Full card name typed in
-  const format = formatSelect.value; // Selected format
-  const cardType = cardTypeSelect.value; // Selected card type
+  const pokemonName = cardNameInput.value.trim();
+  const format = formatSelect.value;
+  const cardType = cardTypeSelect.value;
 
   try {
-    // Construct the base query
     let query = `legalities.${format}:legal AND supertype:${cardType}`;
-
-    // Add card name filter if provided
     if (pokemonName) {
       query += ` AND name:"${pokemonName}"`;
     }
 
-    console.log("Search Query:", query); // Debugging: Log the query being sent to the API
-
-    // Fetch data from API
     const response = await fetch(
       `https://api.pokemontcg.io/v2/cards?q=${query}`,
-      {
-        headers: { "X-Api-Key": apiKey },
-      }
+      { headers: { "X-Api-Key": apiKey } }
     );
     const data = await response.json();
 
     const cards = data.data;
     resultsCount.textContent = `(${cards.length})`;
 
-    // Handle no results
     if (cards.length === 0) {
       resultsGrid.innerHTML =
         "<p>No cards match your search criteria in the selected format and type.</p>";
       return;
     }
 
-    // Display results
     cards.forEach((card) => {
+      const setId = card.set?.id || "Unknown Set";
+      const ptcgoCode = setCache[setId] || "Unknown Code"; // Use cached data
+
+      console.log(`Processing Card: ${card.name}`);
+      console.log(`Set ID: ${setId}, PTCGO Code: ${ptcgoCode}`); // Debug
+
       const cardDiv = document.createElement("div");
       cardDiv.className = "card";
       cardDiv.dataset.id = card.id;
       cardDiv.dataset.type = card.supertype.toLowerCase();
-      cardDiv.dataset.rarity = card.rarity
-        ? card.rarity.toLowerCase()
-        : "unknown"; // Rarity
-      cardDiv.dataset.setId = card.set?.id || "Unknown Set"; // Set ID
-      cardDiv.dataset.cardNumber = card.number || "Unknown Number"; // Card number
+      cardDiv.dataset.rarity = card.rarity || "unknown";
+      cardDiv.dataset.setId = setId;
+      cardDiv.dataset.ptcgoCode = ptcgoCode;
+      cardDiv.dataset.cardNumber = card.number || "Unknown Number";
 
       cardDiv.innerHTML = `
         <div class="card-image-container">
@@ -214,7 +232,7 @@ searchButton.addEventListener("click", async () => {
         card.name
       }', '${card.images?.small || ""}', '${card.supertype}', '${
         card.rarity
-      }', '${card.set?.id}', '${card.number}')">Add to Deck</button>
+      }', '${setId}', '${card.number}', '${ptcgoCode}')">Add to Deck</button>
           <button class="add-button" onclick="displayCardOverlay('${
             card.id
           }', '${card.images?.large || ""}')">More Info</button>
@@ -305,7 +323,20 @@ async function displayCardOverlay(cardId, imageUrl) {
 }
 
 // Add to Deck Functionality
-function addToDeck(id, name, image, supertype, rarity, setId, cardNumber) {
+// Add to Deck Functionality
+function addToDeck(
+  id,
+  name,
+  image,
+  supertype,
+  rarity,
+  setId,
+  cardNumber,
+  ptcgoCode
+) {
+  // Debugging: Ensure the PTCGO Code is passed correctly
+  console.log("Adding to Deck:", { id, name, supertype, ptcgoCode });
+
   // Check if the card is an Ace Spec card
   const isAceSpec = rarity && rarity.toLowerCase() === "ace spec rare";
 
@@ -373,6 +404,7 @@ function addToDeck(id, name, image, supertype, rarity, setId, cardNumber) {
       cardDiv.dataset.type = supertype.toLowerCase();
       cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown"; // Ensure rarity is always set
       cardDiv.dataset.setId = setId || "Unknown Set"; // Include set ID
+      cardDiv.dataset.ptcgoCode = ptcgoCode || "Unknown Code"; // Add PTCGO Code
       cardDiv.dataset.cardNumber = cardNumber || "Unknown Number"; // Include card number
 
       cardDiv.innerHTML = `
@@ -424,6 +456,7 @@ function addToDeck(id, name, image, supertype, rarity, setId, cardNumber) {
     cardDiv.dataset.type = supertype.toLowerCase();
     cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown"; // Ensure rarity is always set
     cardDiv.dataset.setId = setId || "Unknown Set"; // Include set ID
+    cardDiv.dataset.ptcgoCode = ptcgoCode || "Unknown Code"; // Add PTCGO Code
     cardDiv.dataset.cardNumber = cardNumber || "Unknown Number"; // Include card number
 
     cardDiv.innerHTML = `
@@ -506,27 +539,53 @@ document.getElementById("export-text").addEventListener("click", () => {
   const deckGrid = document.getElementById("deck-grid");
   const deckCards = Array.from(deckGrid.children);
 
-  // Construct the decklist as text
-  const deckText = deckCards.map((card) => {
+  if (deckCards.length === 0) {
+    alert("Your deck is empty. Add cards before exporting.");
+    return;
+  }
+
+  // Group cards by type
+  const groupedCards = { Pokémon: [], Trainer: [], Energy: [] };
+
+  deckCards.forEach((card) => {
     const count = card.querySelector(".count").textContent; // Number of copies
     const name = card
       .querySelector(".card-info p")
       .textContent.split(" [")[0]
       .trim(); // Card name
-    const setId = card.dataset.setId || "Unknown Set"; // Set ID
-    const cardNumber = card.dataset.cardNumber || "Unknown Number"; // Card number
+    const ptcgoCode = card.dataset.ptcgoCode || "Unknown Code";
+    let cardNumber = card.dataset.cardNumber || "Unknown Number";
 
-    return `${count} ${name} ${setId} ${cardNumber}`;
+    // Extract numeric portion of cardNumber
+    const numericCardNumber = cardNumber.replace(/\D/g, ""); // Remove all non-numeric characters
+
+    const cardLine = `${count} ${name} ${ptcgoCode} ${numericCardNumber}`;
+    const type = card.dataset.type.toLowerCase();
+
+    if (type === "pokémon") groupedCards.Pokémon.push(cardLine);
+    else if (type === "trainer") groupedCards.Trainer.push(cardLine);
+    else if (type === "energy") groupedCards.Energy.push(cardLine);
   });
 
-  // If the deck is empty, show an alert
-  if (deckText.length === 0) {
-    alert("Your deck is empty. Add cards before exporting.");
-    return;
-  }
+  // Format the decklist
+  let deckString = "";
+  let totalCards = 0;
+
+  Object.entries(groupedCards).forEach(([group, cards]) => {
+    if (cards.length > 0) {
+      deckString += `${group}: ${cards.length}\n`; // Add header with count
+      deckString += cards.join("\n") + "\n\n"; // Add card details
+      totalCards += cards.reduce(
+        (sum, line) => sum + parseInt(line.split(" ")[0]),
+        0
+      ); // Sum card counts
+    }
+  });
+
+  deckString += `Total Cards: ${totalCards}`;
 
   // Create and download the text file
-  const blob = new Blob([deckText.join("\n")], { type: "text/plain" });
+  const blob = new Blob([deckString], { type: "text/plain" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = "decklist.txt";
@@ -557,16 +616,66 @@ document.getElementById("copy-decklist").addEventListener("click", () => {
   }
 
   // Copy the decklist to the clipboard
-  const deckString = deckText.join("\n");
-  navigator.clipboard
-    .writeText(deckString)
-    .then(() => {
-      alert("Decklist copied to clipboard!");
-    })
-    .catch((err) => {
-      console.error("Failed to copy decklist: ", err);
-      alert("Failed to copy decklist. Please try again.");
+  document.getElementById("copy-decklist").addEventListener("click", () => {
+    const deckGrid = document.getElementById("deck-grid");
+    const deckCards = Array.from(deckGrid.children);
+
+    if (deckCards.length === 0) {
+      alert("Your deck is empty. Add cards before copying.");
+      return;
+    }
+
+    // Group cards by type
+    const groupedCards = { Pokémon: [], Trainer: [], Energy: [] };
+
+    deckCards.forEach((card) => {
+      const count = card.querySelector(".count").textContent; // Number of copies
+      const name = card
+        .querySelector(".card-info p")
+        .textContent.split(" [")[0]
+        .trim();
+      const ptcgoCode = card.dataset.ptcgoCode || "Unknown Code";
+      let cardNumber = card.dataset.cardNumber || "Unknown Number";
+
+      // Extract numeric portion of cardNumber
+      const numericCardNumber = cardNumber.replace(/\D/g, ""); // Remove all non-numeric characters
+
+      const cardLine = `${count} ${name} ${ptcgoCode} ${numericCardNumber}`;
+      const type = card.dataset.type.toLowerCase();
+
+      if (type === "pokémon") groupedCards.Pokémon.push(cardLine);
+      else if (type === "trainer") groupedCards.Trainer.push(cardLine);
+      else if (type === "energy") groupedCards.Energy.push(cardLine);
     });
+
+    // Format decklist with headers and grouped cards
+    let deckString = "";
+    let totalCards = 0;
+
+    Object.entries(groupedCards).forEach(([group, cards]) => {
+      if (cards.length > 0) {
+        deckString += `${group}: ${cards.length}\n`; // Add header with count
+        deckString += cards.join("\n") + "\n\n"; // Add card details
+        totalCards += cards.reduce(
+          (sum, line) => sum + parseInt(line.split(" ")[0]),
+          0
+        ); // Sum card counts
+      }
+    });
+
+    deckString += `Total Cards: ${totalCards}`;
+
+    // Copy formatted decklist to clipboard
+    navigator.clipboard
+      .writeText(deckString)
+      .then(() => {
+        alert("Decklist copied to clipboard in Pokémon TCG Live format!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy decklist: ", err);
+        alert("Failed to copy decklist. Please try again.");
+      });
+  });
 });
 
 document.getElementById("clear-decklist").addEventListener("click", () => {
