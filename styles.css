@@ -357,6 +357,7 @@ header.dark-mode {
   padding: 3px;
   border-radius: 10px;
   background-color: #ffffff;
+  color: #000000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
