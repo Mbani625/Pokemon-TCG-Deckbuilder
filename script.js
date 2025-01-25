@@ -203,9 +203,7 @@ searchButton.addEventListener("click", async () => {
     cards.forEach((card) => {
       const setId = card.set?.id || "Unknown Set";
       const ptcgoCode = setCache[setId] || "Unknown Code"; // Use cached data
-
-      console.log(`Processing Card: ${card.name}`);
-      console.log(`Set ID: ${setId}, PTCGO Code: ${ptcgoCode}`); // Debug
+      const sanitizedCardName = card.name.replace(/'/g, "\\'"); // Escape single quotes
 
       const cardDiv = document.createElement("div");
       cardDiv.className = "card";
@@ -228,11 +226,13 @@ searchButton.addEventListener("click", async () => {
         <li><strong>Set:</strong> ${card.set?.name || "Unknown Set"}</li>
         <li><strong>Number:</strong> ${card.number || "Unknown Number"}</li>
         <div class="button-container">
-          <button class="add-button" onclick="addToDeck('${card.id}', '${
-        card.name
-      }', '${card.images?.small || ""}', '${card.supertype}', '${
-        card.rarity
-      }', '${setId}', '${card.number}', '${ptcgoCode}')">Add to Deck</button>
+          <button class="add-button" onclick="addToDeck('${
+            card.id
+          }', '${sanitizedCardName}', '${card.images?.small || ""}', '${
+        card.supertype
+      }', '${card.rarity}', '${setId}', '${
+        card.number
+      }', '${ptcgoCode}')">Add to Deck</button>
           <button class="add-button" onclick="displayCardOverlay('${
             card.id
           }', '${card.images?.large || ""}')">More Info</button>
@@ -260,6 +260,11 @@ resultsGrid.addEventListener("touchstart", (event) => {
 async function displayCardOverlay(cardId, imageUrl) {
   const overlay = document.createElement("div");
   overlay.className = "overlay";
+
+  // Apply dark mode if enabled
+  if (document.body.classList.contains("dark-mode")) {
+    overlay.classList.add("dark-mode");
+  }
 
   const cardContainer = document.createElement("div");
   cardContainer.className = "expanded-card-container";

@@ -75,7 +75,7 @@ p {
 /* Dark Mode Styles */
 body.dark-mode {
   background-color: #121212;
-  color: #f0f0f0;
+  color: #ffffff;
 }
 
 header.dark-mode {
@@ -135,6 +135,7 @@ header.dark-mode {
     flex-direction: column; /* Stack elements vertically */
     align-items: flex-start; /* Align items to the left */
     gap: 15px;
+    border-radius: 10px;
   }
 
   #card-search-bar select,
@@ -164,6 +165,7 @@ header.dark-mode {
   border-radius: 4px;
   width: 20%;
   margin-top: 40px;
+  color: #000000;
 }
 
 .autocomplete-item {
@@ -427,9 +429,39 @@ header.dark-mode {
   position: relative;
 }
 
+@media (max-width: 767px) {
+  .expanded-card-container {
+    width: 80%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    justify-items: center;
+  }
+
+  .expanded-card-container img {
+    width: 80%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .expanded-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    max-height: 80%;
+    overflow-y: auto;
+    position: relative;
+  }
+}
+
 .details-list {
   display: flex;
-  margin: auto;
+  margin: 10px;
   justify-content: center;
   gap: 20px;
   width: fit-content;
@@ -438,6 +470,7 @@ header.dark-mode {
 .add-button {
   background-color: #0078d7;
   color: white;
+  width: 100%;
   border: none;
   border-radius: 4px;
   padding: 10px 20px;
@@ -445,6 +478,7 @@ header.dark-mode {
   font-size: 16px;
   margin: 20px auto;
   display: inline-flex;
+  justify-content: center;
   text-align: center;
 }
 
@@ -478,17 +512,41 @@ header.dark-mode {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Touch-Friendly Buttons */
-.add-button,
-.remove-button {
+/* Dark Mode for Expanded Overlay */
+body.dark-mode .overlay {
+  background: rgba(18, 18, 18, 0.95);
+}
+
+body.dark-mode .expanded-card-container {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  border: 1px solid #444444;
+}
+
+body.dark-mode .expanded-card-container img {
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .details-list {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
   padding: 10px;
-  font-size: 14px;
+  border-radius: 8px;
+}
+
+body.dark-mode .add-button {
+  background-color: #444444;
+  color: #f0f0f0;
+}
+
+body.dark-mode .add-button:hover {
+  background-color: #555555;
 }
 
 @media (max-width: 767px) {
   .add-button,
   .remove-button {
     padding: 8px;
-    font-size: 12px;
+    font-size: 16px;
   }
 }
