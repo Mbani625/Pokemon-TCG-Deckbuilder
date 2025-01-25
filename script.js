@@ -716,6 +716,11 @@ function enableSwipeClose(overlay) {
 }
 
 async function displayCardOverlay(cardId, imageUrl) {
+  // Check if an overlay already exists
+  if (document.querySelector(".overlay")) {
+    return; // Prevent creating another overlay
+  }
+
   const overlay = document.createElement("div");
   overlay.className = "overlay";
 

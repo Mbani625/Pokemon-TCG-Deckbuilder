@@ -553,5 +553,6 @@ body.dark-mode .add-button:hover {
   .remove-button {
     padding: 8px;
     font-size: 16px;
+    margin: auto;
   }
 }
