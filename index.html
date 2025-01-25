@@ -9,6 +9,7 @@
   <body>
     <header>
       <h2>Pokemon TCG Deckbuilder</h2>
+      <button id="decks-page-button">Decks</button>
       <button id="dark-mode-toggle">🌙 Dark Mode</button>
     </header>
 
@@ -45,6 +46,7 @@
       <section id="deck-section">
         <h2>Your Deck</h2>
         <div id="deck-functions">
+          <button id="save-deck-button">Save Deck</button>
           <button id="reorder-deck-btn" class="reorder-button">Re-Order</button>
           <button id="export-text">Export as Text</button>
           <button id="copy-decklist">PTCG Live</button>
@@ -54,12 +56,34 @@
           <div id="deck-grid" class="visual-view"></div>
         </div>
       </section>
-    </main>
+      <div id="save-deck-dialog" class="dialog hidden">
+        <h3>Save Deck</h3>
+        <label for="deck-name-input">Deck Name:</label>
+        <input
+          type="text"
+          id="deck-name-input"
+          placeholder="Enter deck name"
+          required
+        />
 
+        <label for="folder-dropdown">Save to Folder:</label>
+        <select id="folder-dropdown">
+          <option value="">Select a Folder</option>
+        </select>
+
+        <div class="dialog-buttons">
+          <button id="save-deck-confirm">Save</button>
+          <button id="save-dialog-cancel">Cancel</button>
+        </div>
+      </div>
+    </main>
+    <script>
+      const deckGrid = document.getElementById("deck-grid");
+    </script>
+    <script src="localstorage.js"></script>
     <script src="script.js"></script>
     <script src="add.js"></script>
     <script src="deckfunc.js"></script>
     <script src="overlay.js"></script>
-    <script src="localstorage.js"></script>
   </body>
 </html>

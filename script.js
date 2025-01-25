@@ -6,7 +6,7 @@ const cardNameInput = document.getElementById("card-name-input");
 const autocompleteResults = document.getElementById("autocomplete-results");
 const searchButton = document.getElementById("search-button");
 const resultsGrid = document.getElementById("results-grid");
-const deckGrid = document.getElementById("deck-grid");
+
 const pokemonCatalog = []; // Holds unique Pokémon names
 const trainerCatalog = []; // Holds unique Trainer card names
 const setCache = {}; // Cache to store setId -> ptcgoCode mappings
@@ -43,20 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleButton.classList.add("dark-mode");
     toggleButton.textContent = "☀️ Light Mode";
   }
-
-  // Toggle Dark Mode
-  toggleButton.addEventListener("click", () => {
-    body.classList.toggle("dark-mode");
-    toggleButton.classList.toggle("dark-mode");
-
-    if (body.classList.contains("dark-mode")) {
-      localStorage.setItem("darkMode", "enabled");
-      toggleButton.textContent = "☀️ Light Mode";
-    } else {
-      localStorage.setItem("darkMode", "disabled");
-      toggleButton.textContent = "🌙 Dark Mode";
-    }
-  });
 });
 
 // Fetch unique Pokémon names
@@ -168,6 +154,10 @@ async function fetchLegalSets(format) {
   }
 }
 
+document.getElementById("decks-page-button").addEventListener("click", () => {
+  window.location.href = "decks.html";
+});
+
 // Search Function
 searchButton.addEventListener("click", async () => {
   resultsGrid.innerHTML = "";
@@ -247,3 +237,89 @@ window.onload = async () => {
   await fetchPokemonCatalog();
   await fetchTrainerCatalog();
 };
+
+// Show the save deck dialog
+function showSaveDeckDialog() {
+  const dialog = document.getElementById("save-deck-dialog");
+  const dropdown = document.getElementById("folder-dropdown");
+
+  // Populate dropdown with folder names
+  const folders = JSON.parse(localStorage.getItem("deckFolders")) || [];
+  dropdown.innerHTML = '<option value="">Select a Folder</option>';
+  folders.forEach((folder) => {
+    const option = document.createElement("option");
+    option.value = folder;
+    option.textContent = folder;
+    dropdown.appendChild(option);
+  });
+
+  dialog.classList.remove("hidden");
+}
+
+// Hide the save deck dialog
+function hideSaveDeckDialog() {
+  const dialog = document.getElementById("save-deck-dialog");
+  dialog.classList.add("hidden");
+}
+
+// Save the deck when "Save" is clicked
+function saveDeck() {
+  const deckName = document.getElementById("deck-name-input").value.trim();
+  const folderName = document.getElementById("folder-dropdown").value;
+
+  if (!deckName && !folderName) {
+    alert("Please enter a deck name or select a folder.");
+    return;
+  }
+
+  if (deckName && folderName) {
+    alert("Please either enter a deck name or select a folder, not both.");
+    return;
+  }
+
+  if (deckName) {
+    saveDeckToFolder(deckName, "Default"); // Use Default folder for unnamed folders
+  } else if (folderName) {
+    saveDeckToFolder("Unnamed Deck", folderName); // Use a default name for unnamed decks
+  }
+
+  hideSaveDeckDialog();
+}
+
+// Attach event listeners
+function setupEventListeners() {
+  document
+    .getElementById("save-deck-button")
+    .addEventListener("click", showSaveDeckDialog);
+  document
+    .getElementById("save-dialog-cancel")
+    .addEventListener("click", hideSaveDeckDialog);
+  document
+    .getElementById("save-deck-confirm")
+    .addEventListener("click", saveDeck);
+}
+
+function initializeApp() {
+  loadDeckFromLocalStorage();
+  setupEventListeners();
+
+  // Maintain dark mode setting
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+  const body = document.body;
+
+  if (localStorage.getItem("darkMode") === "enabled") {
+    body.classList.add("dark-mode");
+    darkModeToggle.textContent = "☀️ Light Mode";
+  }
+
+  darkModeToggle.addEventListener("click", () => {
+    const isDarkMode = body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", isDarkMode ? "enabled" : "disabled");
+    darkModeToggle.textContent = isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode";
+  });
+
+  console.log("Application initialized.");
+}
+
+// Run the initialization on page load
+document.addEventListener("DOMContentLoaded", initializeApp);
