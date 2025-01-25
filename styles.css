@@ -42,12 +42,6 @@ main {
   position: relative;
 }
 
-h2 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 li {
   margin: 5px;
   text-align: left;
@@ -55,6 +49,27 @@ li {
 
 p {
   margin: 2px;
+}
+
+#deck-functions {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 10px auto;
+}
+
+#deck-functions button {
+  min-width: 135px;
+}
+
+@media (max-width: 767px) {
+  #deck-functions {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 10px auto;
+    justify-content: space-evenly;
+  }
 }
 
 #dark-mode-toggle {
@@ -226,17 +241,6 @@ header.dark-mode {
   #results-grid,
   #deck-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  }
-
-  h2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  h2 button {
-    width: 50%;
   }
 }
 
