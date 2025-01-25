@@ -1,4 +1,6 @@
-/* General Styles */
+/* ======================
+General Styles
+======================*/
 body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
@@ -52,26 +54,9 @@ p {
   color: #000000;
 }
 
-#deck-functions {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  margin: 10px auto;
-}
-
-#deck-functions button {
-  min-width: 135px;
-}
-
-@media (max-width: 767px) {
-  #deck-functions {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    margin: 10px auto;
-    justify-content: space-evenly;
-  }
-}
+/* ======================
+Dark Mode
+======================*/
 
 #dark-mode-toggle {
   cursor: pointer;
@@ -88,7 +73,6 @@ p {
   background-color: #005bb5;
 }
 
-/* Dark Mode Styles */
 body.dark-mode {
   background-color: #121212;
   color: #ffffff;
@@ -114,12 +98,40 @@ header.dark-mode {
   color: #f0f0f0;
 }
 
-.button-container {
-  width: 80%;
-  justify-self: center;
+body.dark-mode .overlay {
+  background: rgba(18, 18, 18, 0.95);
 }
 
-/* Search Section */
+body.dark-mode .expanded-card-container {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  border: 1px solid #444444;
+}
+
+body.dark-mode .expanded-card-container img {
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .details-list {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+body.dark-mode .add-button {
+  background-color: #444444;
+  color: #f0f0f0;
+}
+
+body.dark-mode .add-button:hover {
+  background-color: #555555;
+}
+
+/* ======================
+Search Bar
+======================*/
+
 #search-section {
   margin-bottom: 40px;
   width: 100%;
@@ -150,28 +162,18 @@ header.dark-mode {
   transition: background-color 0.2s;
 }
 
-/* Mobile Styling */
-@media (max-width: 767px) {
-  #card-search-bar {
-    flex-direction: column; /* Stack elements vertically */
-    align-items: flex-start; /* Align items to the left */
-    gap: 15px;
-    border-radius: 10px;
-  }
+#card-search-bar select,
+#card-search-bar input {
+  padding: 0.5rem;
+  width: 90%;
+  margin: auto;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-  #card-search-bar select,
-  #card-search-bar input {
-    padding: 0.5rem;
-    width: 90%;
-    margin: auto;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  #search-button {
-    margin: auto;
-  }
+#search-button {
+  margin: auto;
 }
 
 #autocomplete-results {
@@ -200,7 +202,21 @@ header.dark-mode {
   color: white;
 }
 
-/* Search Results */
+/* ======================
+Results/Deck Grid
+======================*/
+
+#deck-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 1rem;
+  border-radius: 4px;
+  max-height: calc(100vh - 250px);
+  overflow: auto;
+}
+
 #results-grid {
   display: flex;
   flex-wrap: wrap;
@@ -211,41 +227,39 @@ header.dark-mode {
   border-radius: 4px;
 }
 
-.filter-button {
-  background-color: #0078d7;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 14px;
+#deck-grid .card {
+  position: relative;
 }
 
-.filter-button:hover {
-  background-color: #0056b3;
+#deck-grid .stacked-card {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.filter-button.active {
-  background-color: #004494;
-  font-weight: bold;
+/* ======================
+DeckList Functions
+======================*/
+
+#deck-functions {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 10px auto;
 }
 
-/* Responsive Grid for Search Results and Deck */
-@media (min-width: 768px) {
-  #results-grid,
-  #deck-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+#deck-functions button {
+  min-width: 135px;
+}
+
+.button-container {
+  width: 80%;
+  justify-self: center;
+  button {
+    width: 135px;
   }
 }
 
-@media (max-width: 767px) {
-  #results-grid,
-  #deck-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  }
-}
-
-/* Your Deck Section */
 #deck-section {
   height: auto;
   margin-top: 20px;
@@ -255,7 +269,7 @@ header.dark-mode {
 #deck-section button,
 #search-section button {
   padding: 6px 12px;
-  margin: 4px;
+  margin: 5px;
   font-size: 16px;
   font-weight: bold;
   background-color: #0078d7;
@@ -287,34 +301,10 @@ header.dark-mode {
   background-color: #d1403b;
 }
 
-#deck-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  padding: 1rem;
-  background-color: white;
-  border-radius: 4px;
-  overflow: auto; /* Allow scrolling if content overflows */
-  max-height: calc(100vh - 250px); /* Ensure it fits within the viewport */
-}
+/* ======================
+Card Layout
+======================*/
 
-.reorder-button {
-  background-color: #0078d7;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 20px;
-}
-
-.reorder-button:hover {
-  background-color: #0056b3;
-}
-
-/* Card Styles */
 .card {
   position: relative;
   height: auto;
@@ -377,32 +367,48 @@ header.dark-mode {
   background-color: #d93636;
 }
 
-/* Overlay for Expanded Views */
+/* ======================
+Overlay/Expanded  Card
+======================*/
+
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  button {
+    display: flex;
+    width: 135px;
+    justify-content: center;
+    padding: 6px 12px;
+    margin: 0px auto;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #0078d7;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    justify-self: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
 }
 
 .expanded-card-container {
-  width: 660px;
-  margin-bottom: 20px;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: white;
-  justify-items: center;
-}
-
-.expanded-card-container img {
-  height: 600px;
-  margin: auto;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .expanded-image {
@@ -418,34 +424,12 @@ header.dark-mode {
   position: relative;
 }
 
-@media (max-width: 767px) {
-  .expanded-card-container {
-    width: 80%;
-    margin-bottom: 20px;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: white;
-    justify-items: center;
-  }
-
-  .expanded-card-container img {
-    width: 80%;
-    height: auto;
-    object-fit: contain;
-  }
-
-  .expanded-image {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 600px;
-    max-height: 80%;
-    overflow-y: auto;
-    position: relative;
-  }
+.expanded-card-container img {
+  width: 80%;
+  height: auto;
+  margin: auto;
+  object-fit: contain;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .details-list {
@@ -456,88 +440,48 @@ header.dark-mode {
   width: fit-content;
 }
 
-.add-button {
-  background-color: #0078d7;
-  color: white;
-  width: 100%;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-  margin: 20px auto;
-  display: inline-flex;
-  justify-content: center;
-  text-align: center;
-}
-
-.add-button:hover {
-  background-color: #0056b3;
-}
-
-/* Overlay Adjustments for Mobile */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-}
-
-.expanded-card-container {
-  max-width: 90%;
-  max-height: 90%;
-  overflow-y: auto;
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* Dark Mode for Expanded Overlay */
-body.dark-mode .overlay {
-  background: rgba(18, 18, 18, 0.95);
-}
-
-body.dark-mode .expanded-card-container {
-  background-color: #1e1e1e;
-  color: #f0f0f0;
-  border: 1px solid #444444;
-}
-
-body.dark-mode .expanded-card-container img {
-  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-}
-
-body.dark-mode .details-list {
-  background-color: #2a2a2a;
-  color: #f0f0f0;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-body.dark-mode .add-button {
-  background-color: #444444;
-  color: #f0f0f0;
-}
-
-body.dark-mode .add-button:hover {
-  background-color: #555555;
-}
+/* ======================
+Media Queries
+======================*/
 
 @media (max-width: 767px) {
+  #deck-functions {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 10px auto;
+    justify-content: space-evenly;
+  }
+  #card-search-bar {
+    flex-direction: column; /* Stack elements vertically */
+    align-items: flex-start; /* Align items to the left */
+    gap: 15px;
+    border-radius: 10px;
+  }
+  #results-grid,
+  #deck-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
   .add-button,
   .remove-button {
     padding: 8px;
     font-size: 16px;
     margin: auto;
     justify-self: center;
+  }
+  .expanded-card-container {
+    width: 80%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    justify-items: center;
+  }
+}
+
+@media (min-width: 768px) {
+  #results-grid,
+  #deck-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }
