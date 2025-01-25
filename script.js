@@ -246,16 +246,6 @@ searchButton.addEventListener("click", async () => {
   }
 });
 
-// Event listener for touch events on the results grid
-resultsGrid.addEventListener("touchstart", (event) => {
-  const target = event.target.closest(".card");
-  if (target) {
-    const cardId = target.dataset.id;
-    const imageUrl = target.querySelector("img").src;
-    displayCardOverlay(cardId, imageUrl);
-  }
-});
-
 //Expand Image on Click
 async function displayCardOverlay(cardId, imageUrl) {
   const overlay = document.createElement("div");
