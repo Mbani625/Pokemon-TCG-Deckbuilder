@@ -245,15 +245,15 @@ DeckList Functions
 
 .add-button {
   font-size: 16px;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   margin-right: 5px;
   justify-self: center;
   font-size: 16px;
   font-weight: bold;
   color: #0078d7;
   border: 1px solid #0078d7;
-  border-radius: 20px;
+  border-radius: 15px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -267,13 +267,13 @@ DeckList Functions
 }
 
 .remove-button {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   font-size: 16px;
   font-weight: bold;
   color: #ff4b45;
   border: 1px solid #ff4b45;
-  border-radius: 20px;
+  border-radius: 15px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -331,14 +331,14 @@ Card Layout
 
 .card-info p {
   display: flex;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   margin: 5px;
   justify-content: center;
   align-items: center;
   border: 1px solid #0078d7;
   background-color: white;
-  border-radius: 20px;
+  border-radius: 15px;
   color: #000000;
 }
 /* ======================
@@ -454,8 +454,9 @@ Media Queries
   }
 
   .card {
+    display: flex;
     position: relative;
-    width: 160px;
+    width: 150px;
     text-align: center;
     overflow: visible; /* Ensure the card container allows stacked cards to display fully */
     border-radius: 8px;
