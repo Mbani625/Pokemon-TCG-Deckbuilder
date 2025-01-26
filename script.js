@@ -108,7 +108,7 @@ cardNameInput.addEventListener("input", () => {
     .slice(0, 10);
 
   if (filteredNames.length > 0) {
-    autocompleteResults.style.display = "block";
+    autocompleteResults.style.display = "inline-block";
     filteredNames.forEach((name) => {
       const div = document.createElement("div");
       div.className = "autocomplete-item";
