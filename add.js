@@ -80,15 +80,16 @@ function addToDeck(
       stackedImage.style.transform = `translateY(${currentCount * 10}px)`;
       existingCard.querySelector(".card-stack").appendChild(stackedImage);
     } else {
-      // Create new Basic Energy card entry in the deck
+      // Create new card entry in the deck
       const cardDiv = document.createElement("div");
       cardDiv.className = "card";
       cardDiv.dataset.id = id;
+      cardDiv.dataset.name = name; // Ensure name is stored correctly
       cardDiv.dataset.type = supertype.toLowerCase();
-      cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown"; // Ensure rarity is always set
-      cardDiv.dataset.setId = setId || "Unknown Set"; // Include set ID
-      cardDiv.dataset.ptcgoCode = ptcgoCode || "Unknown Code"; // Add PTCGO Code
-      cardDiv.dataset.cardNumber = cardNumber || "Unknown Number"; // Include card number
+      cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown";
+      cardDiv.dataset.setId = setId || "Unknown Set";
+      cardDiv.dataset.ptcgoCode = ptcgoCode || "Unknown Code";
+      cardDiv.dataset.cardNumber = cardNumber || "Unknown Number";
 
       cardDiv.innerHTML = `
         <div class="card-info">
@@ -137,11 +138,12 @@ function addToDeck(
     const cardDiv = document.createElement("div");
     cardDiv.className = "card";
     cardDiv.dataset.id = id;
+    cardDiv.dataset.name = name; // Ensure name is stored correctly
     cardDiv.dataset.type = supertype.toLowerCase();
-    cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown"; // Ensure rarity is always set
-    cardDiv.dataset.setId = setId || "Unknown Set"; // Include set ID
-    cardDiv.dataset.ptcgoCode = ptcgoCode || "Unknown Code"; // Add PTCGO Code
-    cardDiv.dataset.cardNumber = cardNumber || "Unknown Number"; // Include card number
+    cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown";
+    cardDiv.dataset.setId = setId || "Unknown Set";
+    cardDiv.dataset.ptcgoCode = ptcgoCode || "Unknown Code";
+    cardDiv.dataset.cardNumber = cardNumber || "Unknown Number";
 
     cardDiv.innerHTML = `
       <div class="card-info">

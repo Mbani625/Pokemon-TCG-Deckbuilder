@@ -143,12 +143,12 @@ document.getElementById("copy-decklist").addEventListener("click", () => {
 
   Object.entries(groupedCards).forEach(([group, cards]) => {
     if (cards.length > 0) {
-      deckString += `${group}: ${cards.length}\n`;
-      deckString += cards.join("\n") + "\n\n";
+      deckString += `${group}: ${cards.length}\n`; // Add header with count
+      deckString += cards.join("\n") + "\n\n"; // Add card details
       totalCards += cards.reduce(
         (sum, line) => sum + parseInt(line.split(" ")[0]),
         0
-      );
+      ); // Sum card counts
     }
   });
 
