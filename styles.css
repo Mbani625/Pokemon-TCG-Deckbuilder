@@ -222,6 +222,7 @@ Results/Deck Grid
   width: 100%; /* Make it span the full width */
 }
 
+#results-grid,
 #deck-grid {
   display: flex;
   flex-wrap: wrap; /* Ensures items wrap to the next line when space is insufficient */
@@ -231,16 +232,6 @@ Results/Deck Grid
   width: 100%; /* Ensure it spans the full width */
   height: auto;
   overflow: visible; /* Prevent clipping of stacked cards */
-}
-
-#results-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  height: auto;
-  padding: 1rem;
-  border-radius: 4px;
 }
 
 #deck-grid .card {
@@ -284,6 +275,16 @@ DeckList Functions
   padding-bottom: 10px; /* Prevent stack from touching the footer */
   align-items: center;
   text-align: center;
+}
+
+.add-button,
+.remove-button {
+  padding: 8px;
+  font-size: 16px;
+  width: 50px;
+  height: 50px;
+  margin: auto;
+  justify-self: center;
 }
 
 main button,
@@ -468,9 +469,17 @@ Media Queries
     gap: 15px;
     border-radius: 10px;
   }
+
   #results-grid,
   #deck-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    display: flex;
+    flex-wrap: wrap; /* Ensures items wrap to the next line when space is insufficient */
+    gap: 5px; /* Add spacing between cards */
+    justify-content: center; /* Align items to the start of the container */
+    align-items: flex-start; /* Align cards to the top of each row */
+    width: 100%; /* Ensure it spans the full width */
+    height: auto;
+    overflow: visible; /* Prevent clipping of stacked cards */
   }
 
   #deck-section .card-info {
@@ -482,7 +491,7 @@ Media Queries
   .card {
     position: relative;
     height: auto;
-    width: 180px;
+    width: 170px;
     text-align: center;
     overflow: visible; /* Ensure the card container allows stacked cards to display fully */
     padding: 10px; /* Add extra padding to account for taller stacks */
@@ -493,8 +502,8 @@ Media Queries
   .remove-button {
     padding: 8px;
     font-size: 16px;
-    width: 200px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     margin: auto;
     justify-self: center;
   }

@@ -281,7 +281,7 @@ function displaySearchResults(cards) {
       card.supertype
     }', '${card.rarity}', '${setId}', '${
       card.number
-    }', '${ptcgoCode}')">Add to Deck</button>
+    }', '${ptcgoCode}')">+1</button>
       </div>
     `;
     resultsGrid.appendChild(cardDiv);
