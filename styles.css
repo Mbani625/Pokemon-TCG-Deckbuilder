@@ -206,6 +206,7 @@ Results/Deck Grid
 }
 
 #deck-grid .card {
+  display: inline-block;
   position: relative;
   height: 400px;
   margin: 20px auto;
@@ -439,27 +440,21 @@ Media Queries
   #deck-grid {
     display: flex;
     flex-wrap: wrap; /* Ensures items wrap to the next line when space is insufficient */
-    gap: 5px; /* Add spacing between cards */
     justify-content: center; /* Align items to the start of the container */
     align-items: flex-start; /* Align cards to the top of each row */
     width: 100%; /* Ensure it spans the full width */
-    height: auto;
     overflow: visible; /* Prevent clipping of stacked cards */
   }
 
-  #deck-section .card-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  #deck-grid .card {
+    height: 300px;
   }
 
   .card {
     position: relative;
-    height: auto;
-    width: 165px;
+    width: 170px;
     text-align: center;
     overflow: visible; /* Ensure the card container allows stacked cards to display fully */
-    padding: 5px; /* Add extra padding to account for taller stacks */
     border-radius: 8px;
   }
 
