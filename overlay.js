@@ -1,4 +1,3 @@
-//Expand Image on Click
 async function displayCardOverlay(cardId, imageUrl) {
   const overlay = document.createElement("div");
   overlay.className = "overlay";
@@ -36,6 +35,12 @@ async function displayCardOverlay(cardId, imageUrl) {
                 <li><strong>Type:</strong> ${cardData.data.supertype}</li>
                 <li><strong>Set:</strong> ${cardData.data.set.name}</li>
                 <li><strong>Rarity:</strong> ${cardData.data.rarity}</li>
+                <li><strong>Evolves From:</strong> ${
+                  cardData.data.evolvesFrom || "N/A"
+                }</li>
+                <li><strong>Evolves Into:</strong> ${
+                  cardData.data.evolvesTo?.join(", ") || "N/A"
+                }</li>
             </ul>
             <ul>
                 <li><strong>Card Number:</strong> ${cardData.data.number}</li>
@@ -57,10 +62,21 @@ async function displayCardOverlay(cardId, imageUrl) {
                         }</li>
                     </ul>
                 </li>
+                
             </ul>
           `;
 
       cardContainer.appendChild(detailsList);
+
+      // Add a "Show Evolutions" button if evolution data is available
+      if (cardData.data.evolvesFrom || cardData.data.evolvesTo) {
+        const showEvolutionsButton = document.createElement("button");
+        showEvolutionsButton.className = "add-button";
+        showEvolutionsButton.textContent = "Show Evolutions";
+        showEvolutionsButton.onclick = () =>
+          showEvolutions(cardId, cardData.data.name);
+        cardContainer.appendChild(showEvolutionsButton);
+      }
     } catch (error) {
       console.error("Error fetching card details:", error);
     }
@@ -69,65 +85,6 @@ async function displayCardOverlay(cardId, imageUrl) {
   // Add a rectangular Close button
   const closeButton = document.createElement("button");
   closeButton.className = "add-button"; // Reusing the same class as other buttons for styling
-  closeButton.textContent = "Close";
-  closeButton.onclick = () => {
-    document.body.removeChild(overlay);
-  };
-
-  cardContainer.appendChild(closeButton);
-  overlay.appendChild(cardContainer);
-  document.body.appendChild(overlay);
-}
-
-async function displayCardOverlay(cardId, imageUrl) {
-  // Check if an overlay already exists
-  if (document.querySelector(".overlay")) {
-    return; // Prevent creating another overlay
-  }
-
-  const overlay = document.createElement("div");
-  overlay.className = "overlay";
-
-  const cardContainer = document.createElement("div");
-  cardContainer.className = "expanded-card-container";
-
-  const expandedImage = document.createElement("img");
-  expandedImage.src = imageUrl;
-  expandedImage.alt = "Expanded Card";
-  expandedImage.className = "expanded-image";
-  cardContainer.appendChild(expandedImage);
-
-  if (cardId) {
-    try {
-      const response = await fetch(
-        `https://api.pokemontcg.io/v2/cards/${cardId}`,
-        { headers: { "X-Api-Key": apiKey } }
-      );
-      const cardData = await response.json();
-
-      const detailsList = document.createElement("div");
-      detailsList.className = "details-list";
-
-      detailsList.innerHTML = `
-        <ul>
-          <li><strong>Name:</strong> ${cardData.data.name}</li>
-          <li><strong>Type:</strong> ${cardData.data.supertype}</li>
-          <li><strong>Set:</strong> ${cardData.data.set.name}</li>
-          <li><strong>Rarity:</strong> ${cardData.data.rarity}</li>
-        </ul>
-        <ul>
-          <li><strong>Card Number:</strong> ${cardData.data.number}</li>
-          <li><strong>HP:</strong> ${cardData.data.hp || "N/A"}</li>
-          <li><strong>Artist:</strong> ${cardData.data.artist}</li>
-        </ul>
-      `;
-      cardContainer.appendChild(detailsList);
-    } catch (error) {
-      console.error("Error fetching card details:", error);
-    }
-  }
-
-  const closeButton = document.createElement("button");
   closeButton.textContent = "Close";
   closeButton.onclick = () => {
     document.body.removeChild(overlay);

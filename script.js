@@ -171,61 +171,126 @@ searchButton.addEventListener("click", async () => {
 
     const response = await fetch(
       `https://api.pokemontcg.io/v2/cards?q=${query}`,
-      { headers: { "X-Api-Key": apiKey } }
+      {
+        headers: { "X-Api-Key": apiKey },
+      }
     );
     const data = await response.json();
 
     const cards = data.data;
-    resultsCount.textContent = `(${cards.length})`;
-
-    if (cards.length === 0) {
-      resultsGrid.innerHTML =
-        "<p>No cards match your search criteria in the selected format and type.</p>";
-      return;
-    }
-
-    cards.forEach((card) => {
-      const setId = card.set?.id || "Unknown Set";
-      const ptcgoCode = setCache[setId] || "Unknown Code"; // Use cached data
-      const sanitizedCardName = card.name.replace(/'/g, "\\'"); // Escape single quotes
-
-      const cardDiv = document.createElement("div");
-      cardDiv.className = "card";
-      cardDiv.dataset.id = card.id;
-      cardDiv.dataset.type = card.supertype.toLowerCase();
-      cardDiv.dataset.rarity = card.rarity || "unknown";
-      cardDiv.dataset.setId = setId;
-      cardDiv.dataset.ptcgoCode = ptcgoCode;
-      cardDiv.dataset.cardNumber = card.number || "Unknown Number";
-
-      cardDiv.innerHTML = `
-        <div class="card-image-container">
-          <img src="${card.images?.small || ""}" alt="${
-        card.name
-      }" onclick="displayCardOverlay('${card.id}', '${
-        card.images?.large || ""
-      }')">
-        </div>
-        <p><strong>${card.name}</strong></p>
-        <li><strong>Set:</strong> ${card.set?.name || "Unknown Set"}</li>
-        <li><strong>Number:</strong> ${card.number || "Unknown Number"}</li>
-        <div class="button-container">
-          <button class="add-button" onclick="addToDeck('${
-            card.id
-          }', '${sanitizedCardName}', '${card.images?.small || ""}', '${
-        card.supertype
-      }', '${card.rarity}', '${setId}', '${
-        card.number
-      }', '${ptcgoCode}')">Add to Deck</button>
-        </div>
-      `;
-      resultsGrid.appendChild(cardDiv);
-    });
+    displaySearchResults(cards);
   } catch (error) {
     console.error("Error fetching card data:", error);
     resultsGrid.innerHTML = "<p>Failed to fetch cards. Please try again.</p>";
   }
 });
+
+async function showEvolutions(cardId, cardName) {
+  try {
+    // Fetch card details
+    const response = await fetch(
+      `https://api.pokemontcg.io/v2/cards/${cardId}`,
+      {
+        headers: { "X-Api-Key": apiKey },
+      }
+    );
+    const cardData = await response.json();
+    const card = cardData.data;
+
+    // Build the evolution query
+    const evolvesFrom = card.evolvesFrom ? `"${card.evolvesFrom}"` : null;
+    const evolvesTo =
+      card.evolvesTo?.map((evolution) => `"${evolution}"`) || [];
+    let query = "";
+
+    if (evolvesFrom) query += `name:${evolvesFrom}`;
+    if (evolvesTo.length > 0) {
+      if (query) query += " OR ";
+      query += evolvesTo.map((evolution) => `name:${evolution}`).join(" OR ");
+    }
+
+    if (!query) {
+      alert(`No evolution data available for ${cardName}.`);
+      return;
+    }
+
+    // Retain the user's original format or default to "standard"
+    const format = formatSelect?.value || "standard";
+    query += ` AND legalities.${format}:legal`;
+
+    // Fetch evolution-related cards
+    const evolutionResponse = await fetch(
+      `https://api.pokemontcg.io/v2/cards?q=${query}`,
+      { headers: { "X-Api-Key": apiKey } }
+    );
+    const evolutionData = await evolutionResponse.json();
+
+    // Close the overlay
+    const overlay = document.querySelector(".overlay");
+    if (overlay) {
+      document.body.removeChild(overlay);
+    }
+
+    // Display the results in the search grid
+    displaySearchResults(evolutionData.data);
+    document.getElementById("search-section").scrollIntoView();
+  } catch (error) {
+    console.error("Error fetching evolution data:", error);
+    alert("Failed to retrieve evolution data. Please try again.");
+  }
+}
+
+function displaySearchResults(cards) {
+  const resultsGrid = document.getElementById("results-grid");
+  const resultsCount = document.getElementById("results-count");
+
+  resultsGrid.innerHTML = ""; // Clear previous results
+  resultsCount.textContent = `(${cards.length})`;
+
+  if (cards.length === 0) {
+    resultsGrid.innerHTML =
+      "<p>No cards match your search criteria in the selected format and type.</p>";
+    return;
+  }
+
+  cards.forEach((card) => {
+    const setId = card.set?.id || "Unknown Set";
+    const ptcgoCode = setCache[setId] || "Unknown Code"; // Use cached data
+    const sanitizedCardName = card.name.replace(/'/g, "\\'"); // Escape single quotes
+
+    const cardDiv = document.createElement("div");
+    cardDiv.className = "card";
+    cardDiv.dataset.id = card.id;
+    cardDiv.dataset.type = card.supertype.toLowerCase();
+    cardDiv.dataset.rarity = card.rarity || "unknown";
+    cardDiv.dataset.setId = setId;
+    cardDiv.dataset.ptcgoCode = ptcgoCode;
+    cardDiv.dataset.cardNumber = card.number || "Unknown Number";
+
+    cardDiv.innerHTML = `
+      <div class="card-image-container">
+        <img src="${card.images?.small || ""}" alt="${
+      card.name
+    }" onclick="displayCardOverlay('${card.id}', '${
+      card.images?.large || ""
+    }')">
+      </div>
+      <p><strong>${card.name}</strong></p>
+      <li><strong>Set:</strong> ${card.set?.name || "Unknown Set"}</li>
+      <li><strong>Number:</strong> ${card.number || "Unknown Number"}</li>
+      <div class="button-container">
+        <button class="add-button" onclick="addToDeck('${
+          card.id
+        }', '${sanitizedCardName}', '${card.images?.small || ""}', '${
+      card.supertype
+    }', '${card.rarity}', '${setId}', '${
+      card.number
+    }', '${ptcgoCode}')">Add to Deck</button>
+      </div>
+    `;
+    resultsGrid.appendChild(cardDiv);
+  });
+}
 
 // Initialize Views on Load
 window.onload = async () => {
