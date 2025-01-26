@@ -77,7 +77,7 @@ function addToDeck(
       stackedImage.src = image;
       stackedImage.alt = `${name} (Stacked)`;
       stackedImage.className = "stacked-card";
-      stackedImage.style.transform = `translateY(${currentCount * 10}px)`;
+      stackedImage.style.transform = `translateY(${currentCount * 8}px)`;
       existingCard.querySelector(".card-stack").appendChild(stackedImage);
     } else {
       // Create new card entry in the deck
@@ -131,7 +131,7 @@ function addToDeck(
     stackedImage.src = image;
     stackedImage.alt = `${name} (Stacked)`;
     stackedImage.className = "stacked-card";
-    stackedImage.style.transform = `translateY(${currentCount * 10}px)`;
+    stackedImage.style.transform = `translateY(${currentCount * 8}px)`;
     existingCard.querySelector(".card-stack").appendChild(stackedImage);
   } else {
     // Create new card entry in the deck

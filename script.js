@@ -194,6 +194,11 @@ async function showEvolutions(cardId, cardName) {
         headers: { "X-Api-Key": apiKey },
       }
     );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch card data for ID: ${cardId}`);
+    }
+
     const cardData = await response.json();
     const card = cardData.data;
 
@@ -218,11 +223,18 @@ async function showEvolutions(cardId, cardName) {
     const format = formatSelect?.value || "standard";
     query += ` AND legalities.${format}:legal`;
 
+    console.log("Evolution Query:", query); // Debugging: Check constructed query
+
     // Fetch evolution-related cards
     const evolutionResponse = await fetch(
       `https://api.pokemontcg.io/v2/cards?q=${query}`,
       { headers: { "X-Api-Key": apiKey } }
     );
+
+    if (!evolutionResponse.ok) {
+      throw new Error("Failed to fetch evolution-related cards");
+    }
+
     const evolutionData = await evolutionResponse.json();
 
     // Close the overlay
@@ -232,8 +244,12 @@ async function showEvolutions(cardId, cardName) {
     }
 
     // Display the results in the search grid
-    displaySearchResults(evolutionData.data);
-    document.getElementById("search-section").scrollIntoView();
+    if (evolutionData.data && evolutionData.data.length > 0) {
+      displaySearchResults(evolutionData.data);
+      document.getElementById("search-section").scrollIntoView();
+    } else {
+      alert(`No evolution data found for ${cardName}.`);
+    }
   } catch (error) {
     console.error("Error fetching evolution data:", error);
     alert("Failed to retrieve evolution data. Please try again.");
