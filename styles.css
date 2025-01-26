@@ -454,7 +454,6 @@ Media Queries
   }
 
   .card {
-    display: flex;
     position: relative;
     width: 150px;
     text-align: center;
