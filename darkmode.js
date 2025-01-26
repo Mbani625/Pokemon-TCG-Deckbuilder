@@ -30,3 +30,15 @@ function initializeApp() {
 }
 
 document.addEventListener("DOMContentLoaded", initializeApp);
+
+let lastTouchTime = 0;
+
+document.addEventListener("touchstart", (event) => {
+  const now = Date.now();
+
+  if (now - lastTouchTime <= 300) {
+    event.preventDefault(); // Prevent default behavior for double-tap
+  }
+
+  lastTouchTime = now;
+});

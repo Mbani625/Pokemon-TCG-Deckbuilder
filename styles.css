@@ -246,6 +246,7 @@ Results/Deck Grid
 #deck-grid .card {
   position: relative;
   height: 460px;
+  margin: 20px auto;
 }
 
 #deck-grid .stacked-card {
@@ -362,28 +363,13 @@ Card Layout
 .card-info {
   position: relative;
   text-align: center;
+  font-weight: bold;
   margin-bottom: 10px;
   padding: 3px;
   border-radius: 10px;
   background-color: #ffffff;
   color: #000000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.card-info button {
-  margin-top: 8px;
-  padding: 6px 10px;
-  font-size: 14px;
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.card-info button:hover {
-  background-color: #d93636;
 }
 
 /* ======================
@@ -485,6 +471,8 @@ Media Queries
   .remove-button {
     padding: 8px;
     font-size: 16px;
+    width: 200px;
+    height: 40px;
     margin: auto;
     justify-self: center;
   }
@@ -495,6 +483,24 @@ Media Queries
     border-radius: 10px;
     background-color: white;
     justify-items: center;
+  }
+  #deck-section .remove-button {
+    padding: 6px 12px;
+    width: 200px;
+    height: 40px;
+    margin: 5px auto;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #ff4b45;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  #deck-section .remove-button:hover {
+    background-color: #d1403b;
   }
 }
 
