@@ -47,3 +47,20 @@ document.addEventListener("touchstart", (event) => {
 document.getElementById("see-deck-button").addEventListener("click", () => {
   window.location.href = "fulldeck.html"; // Navigate to the full deck page
 });
+
+const backToTopButton = document.getElementById("back-to-top");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 300) {
+    backToTopButton.style.display = "flex";
+  } else {
+    backToTopButton.style.display = "none";
+  }
+});
+
+backToTopButton.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+});
