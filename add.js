@@ -145,7 +145,7 @@ function addToDeck(
       <div class="card-info">
         <p>${name} [<span class="count">1</span>]</p>
         <div class="button-container">
-          <button class="remove-button" onclick="removeFromDeck('${id}', '${name}')">Remove 1</button>
+          <button class="remove-button" onclick="removeFromDeck('${id}', '${name}')">-1</button>
         </div>
       </div>  
       <div class="card-stack">
