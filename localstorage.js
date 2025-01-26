@@ -75,8 +75,7 @@ async function loadCurrentDeckToGrid(deckGrid) {
       const cardInfo = document.createElement("div");
       cardInfo.className = "card-info";
       cardInfo.innerHTML = `
-        <p>
-          x <span class="count">${card.count}</span></p>
+        <p>x <span class="count">${card.count}</span></p>
           <button class="add-button" onclick="addToDeck('${
             card.id
           }', '${cardDetails.name.replace(/'/g, "\\'")}', '${card.image}', '${
