@@ -96,3 +96,22 @@ async function displayCardOverlay(cardId, imageUrl) {
 
   enableSwipeClose(overlay);
 }
+
+// Add Event Listeners to All Images
+function attachOverlayListeners() {
+  const images = document.querySelectorAll("img");
+  images.forEach((image) => {
+    image.addEventListener("click", (event) => {
+      const cardElement = image.closest(".card, .card-stack");
+      if (!cardElement) return;
+
+      const cardId = cardElement.dataset.id || null;
+      const imageUrl = image.src;
+
+      displayCardOverlay(cardId, imageUrl);
+    });
+  });
+}
+
+// Call this after rendering cards
+attachOverlayListeners();

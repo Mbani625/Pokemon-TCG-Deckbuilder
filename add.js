@@ -72,19 +72,20 @@ function addToDeck(
       // Increment count for the Basic Energy card
       count.textContent = currentCount + 1;
 
-      // Add stacked image for visual effect
+      // Add stacked image
       const stackedImage = document.createElement("img");
       stackedImage.src = image;
       stackedImage.alt = `${name} (Stacked)`;
       stackedImage.className = "stacked-card";
-      stackedImage.style.transform = `translateY(${currentCount * 8}px)`;
+      stackedImage.style.transform = `translateY(${currentCount * 10}px)`;
+      stackedImage.onclick = () => displayCardOverlay(id, image); // Attach overlay function
       existingCard.querySelector(".card-stack").appendChild(stackedImage);
     } else {
       // Create new card entry in the deck
       const cardDiv = document.createElement("div");
       cardDiv.className = "card";
       cardDiv.dataset.id = id;
-      cardDiv.dataset.name = name; // Ensure name is stored correctly
+      cardDiv.dataset.name = name;
       cardDiv.dataset.type = supertype.toLowerCase();
       cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown";
       cardDiv.dataset.setId = setId || "Unknown Set";
@@ -126,19 +127,20 @@ function addToDeck(
     // Increment count for the card
     count.textContent = currentCount + 1;
 
-    // Add stacked image for visual effect
+    // Add stacked image
     const stackedImage = document.createElement("img");
     stackedImage.src = image;
     stackedImage.alt = `${name} (Stacked)`;
     stackedImage.className = "stacked-card";
-    stackedImage.style.transform = `translateY(${currentCount * 8}px)`;
+    stackedImage.style.transform = `translateY(${currentCount * 10}px)`;
+    stackedImage.onclick = () => displayCardOverlay(id, image); // Attach overlay function
     existingCard.querySelector(".card-stack").appendChild(stackedImage);
   } else {
     // Create new card entry in the deck
     const cardDiv = document.createElement("div");
     cardDiv.className = "card";
     cardDiv.dataset.id = id;
-    cardDiv.dataset.name = name; // Ensure name is stored correctly
+    cardDiv.dataset.name = name;
     cardDiv.dataset.type = supertype.toLowerCase();
     cardDiv.dataset.rarity = rarity ? rarity.toLowerCase() : "unknown";
     cardDiv.dataset.setId = setId || "Unknown Set";

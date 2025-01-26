@@ -52,22 +52,23 @@ async function loadCurrentDeckToGrid(deckGrid) {
       const cardDiv = document.createElement("div");
       cardDiv.className = "card";
       cardDiv.dataset.id = card.id;
-      cardDiv.dataset.name = cardDetails.name; // Store name in dataset
+      cardDiv.dataset.name = cardDetails.name;
       cardDiv.dataset.type = cardDetails.supertype?.toLowerCase() || "unknown";
       cardDiv.dataset.rarity = cardDetails.rarity?.toLowerCase() || "unknown";
       cardDiv.dataset.setId = cardDetails.set?.id || "Unknown Set";
       cardDiv.dataset.ptcgoCode = cardDetails.set?.ptcgoCode || "Unknown Code";
       cardDiv.dataset.cardNumber = cardDetails.number || "Unknown Number";
 
-      // Add the card stack
       const cardStack = document.createElement("div");
       cardStack.className = "card-stack";
+
       for (let i = 0; i < card.count; i++) {
         const stackedImage = document.createElement("img");
         stackedImage.src = card.image;
         stackedImage.alt = `${cardDetails.name} (Stacked)`;
         stackedImage.className = "stacked-card";
-        stackedImage.style.transform = `translateY(${i * 8}px)`; // Offset for stacking
+        stackedImage.style.transform = `translateY(${i * 10}px)`;
+        stackedImage.onclick = () => displayCardOverlay(card.id, card.image); // Attach overlay function
         cardStack.appendChild(stackedImage);
       }
 
