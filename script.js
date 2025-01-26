@@ -161,14 +161,24 @@ searchButton.addEventListener("click", async () => {
 
   const pokemonName = cardNameInput.value.trim();
   const format = formatSelect.value;
-  const cardType = cardTypeSelect.value;
+  const cardType = cardTypeSelect.value; // Current filter for supertype
+  const selectedType = document.getElementById("type-filter").value; // New type filter
 
   try {
+    // Base query
     let query = `legalities.${format}:legal AND supertype:${cardType}`;
+
+    // Add name filter if provided
     if (pokemonName) {
       query += ` AND name:"${pokemonName}"`;
     }
 
+    // Add type filter if provided
+    if (selectedType) {
+      query += ` AND types:"${selectedType}"`;
+    }
+
+    // Fetch data from the API
     const response = await fetch(
       `https://api.pokemontcg.io/v2/cards?q=${query}`,
       {
@@ -178,7 +188,7 @@ searchButton.addEventListener("click", async () => {
     const data = await response.json();
 
     const cards = data.data;
-    displaySearchResults(cards);
+    displaySearchResults(cards); // Display the filtered results
   } catch (error) {
     console.error("Error fetching card data:", error);
     resultsGrid.innerHTML = "<p>Failed to fetch cards. Please try again.</p>";
