@@ -23,7 +23,19 @@
       </section>
       <button id="back-to-top" class="back-to-top" title="Go to top">↑</button>
     </main>
-
+    <div id="deck-dialog" class="dialog-overlay hidden">
+      <div class="dialog-box">
+        <h3>Select an Action</h3>
+        <div class="dialog-buttons">
+          <button id="load-deck-btn" class="dialog-button">Load Deck</button>
+          <button id="delete-deck-btn" class="dialog-button">
+            Delete Deck
+          </button>
+          <button id="primer-btn" class="dialog-button">Primer</button>
+          <button id="close-dialog" class="close-dialog">Done</button>
+        </div>
+      </div>
+    </div>
     <script src="localstorage.js"></script>
     <script src="folders.js"></script>
     <script src="darkmode.js"></script>

@@ -23,11 +23,9 @@ function initializeDecksPage() {
     folderDiv.setAttribute("role", "button"); // Accessibility enhancement
     folderDiv.tabIndex = 0; // Make it focusable for keyboard users
 
-    // Add event listener to load the deck when clicking anywhere on the folder
+    // Add event listener to show the dialog when clicking the folder
     folderDiv.addEventListener("click", () => {
-      localStorage.setItem("deckList", JSON.stringify(deck)); // Save deck to localStorage
-      alert(`Deck "${deckName}" loaded.`);
-      window.location.href = "index.html"; // Redirect to index.html
+      showDeckDialog(deckName, deck); // Open the dialog with deck-specific actions
     });
 
     // Create the folder button (icon)
@@ -75,6 +73,61 @@ function initializeDecksPage() {
       alert(`New deck "${newDeckName}" has been created.`);
       initializeDecksPage(); // Refresh the deck list
     });
+}
+
+// Show the dialog for the selected deck
+function showDeckDialog(deckName, deck) {
+  const dialog = document.getElementById("deck-dialog");
+  dialog.classList.remove("hidden");
+
+  // Load Deck button
+  const loadDeckButton = document.getElementById("load-deck-btn");
+  loadDeckButton.onclick = () => {
+    localStorage.setItem("deckList", JSON.stringify(deck));
+    alert(`Deck "${deckName}" loaded.`);
+    window.location.href = "index.html"; // Redirect to deckbuilder
+  };
+
+  // Delete Deck button
+  const deleteDeckButton = document.getElementById("delete-deck-btn");
+  deleteDeckButton.onclick = () => {
+    if (confirm(`Are you sure you want to delete the deck "${deckName}"?`)) {
+      deleteDeck(deckName);
+      alert(`Deck "${deckName}" deleted.`);
+      initializeDecksPage(); // Refresh the deck list
+      dialog.classList.add("hidden"); // Close the dialog after deletion
+    }
+  };
+
+  // Primer button
+  const primerButton = document.getElementById("primer-btn");
+  primerButton.onclick = () => {
+    alert(`Opening primer for "${deckName}"...`);
+    // Placeholder: Add navigation logic for the Primer page
+  };
+
+  // Close button
+  const closeDialogButton = document.getElementById("close-dialog");
+  closeDialogButton.onclick = () => {
+    dialog.classList.add("hidden");
+  };
+}
+
+// Helper functions for deck management
+function deleteDeck(deckName) {
+  const decks = getAllDecks();
+  delete decks[deckName];
+  localStorage.setItem("savedDecks", JSON.stringify(decks));
+}
+
+function getAllDecks() {
+  return JSON.parse(localStorage.getItem("savedDecks")) || {};
+}
+
+function saveDeck(deckName, deck) {
+  const decks = getAllDecks();
+  decks[deckName] = deck;
+  localStorage.setItem("savedDecks", JSON.stringify(decks));
 }
 
 document.addEventListener("DOMContentLoaded", () => {
