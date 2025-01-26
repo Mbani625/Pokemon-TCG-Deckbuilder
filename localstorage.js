@@ -66,7 +66,7 @@ async function loadCurrentDeckToGrid(deckGrid) {
         stackedImage.src = card.image;
         stackedImage.alt = `${card.name} (Stacked)`;
         stackedImage.className = "stacked-card";
-        stackedImage.style.transform = `translateY(${i * 10}px)`; // Offset for stacking
+        stackedImage.style.transform = `translateY(${i * 8}px)`; // Offset for stacking
         cardStack.appendChild(stackedImage);
       }
 

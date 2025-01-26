@@ -225,7 +225,7 @@ Results/Deck Grid
 #deck-grid {
   display: flex;
   flex-wrap: wrap; /* Ensures items wrap to the next line when space is insufficient */
-  gap: 15px; /* Add spacing between cards */
+  gap: 5px; /* Add spacing between cards */
   justify-content: center; /* Align items to the start of the container */
   align-items: flex-start; /* Align cards to the top of each row */
   width: 100%; /* Ensure it spans the full width */
@@ -237,7 +237,7 @@ Results/Deck Grid
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
   height: auto;
   padding: 1rem;
   border-radius: 4px;
@@ -245,7 +245,7 @@ Results/Deck Grid
 
 #deck-grid .card {
   position: relative;
-  height: 460px;
+  height: 400px;
   margin: 20px auto;
 }
 
@@ -280,8 +280,8 @@ DeckList Functions
 
 #deck-section {
   height: auto;
-  margin-top: 20px;
-  padding-bottom: 50px; /* Prevent stack from touching the footer */
+  margin-top: 10px;
+  padding-bottom: 10px; /* Prevent stack from touching the footer */
   align-items: center;
   text-align: center;
 }
@@ -330,7 +330,7 @@ Card Layout
 .card {
   position: relative;
   height: auto;
-  width: 250px;
+  width: 220px;
   text-align: center;
   overflow: visible; /* Ensure the card container allows stacked cards to display fully */
   padding: 10px; /* Add extra padding to account for taller stacks */
@@ -479,6 +479,16 @@ Media Queries
     align-items: center;
   }
 
+  .card {
+    position: relative;
+    height: auto;
+    width: 180px;
+    text-align: center;
+    overflow: visible; /* Ensure the card container allows stacked cards to display fully */
+    padding: 10px; /* Add extra padding to account for taller stacks */
+    border-radius: 8px;
+  }
+
   .add-button,
   .remove-button {
     padding: 8px;
@@ -488,6 +498,7 @@ Media Queries
     margin: auto;
     justify-self: center;
   }
+
   .expanded-card-container {
     width: 80%;
     margin-bottom: 20px;

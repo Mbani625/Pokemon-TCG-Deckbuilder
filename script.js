@@ -275,10 +275,6 @@ function displaySearchResults(cards) {
       card.images?.large || ""
     }')">
       </div>
-      <p><strong>${card.name}</strong></p>
-      <li><strong>Set:</strong> ${card.set?.name || "Unknown Set"}</li>
-      <li><strong>Number:</strong> ${card.number || "Unknown Number"}</li>
-      <div class="button-container">
         <button class="add-button" onclick="addToDeck('${
           card.id
         }', '${sanitizedCardName}', '${card.images?.small || ""}', '${
