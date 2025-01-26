@@ -421,6 +421,9 @@ Media Queries
 ======================*/
 
 @media (max-width: 767px) {
+  main {
+    padding: 10px;
+  }
   #deck-functions {
     display: flex;
     flex-wrap: wrap;
@@ -452,7 +455,7 @@ Media Queries
 
   .card {
     position: relative;
-    width: 165px;
+    width: 160px;
     text-align: center;
     overflow: visible; /* Ensure the card container allows stacked cards to display fully */
     border-radius: 8px;
