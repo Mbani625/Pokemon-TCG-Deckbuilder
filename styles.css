@@ -48,11 +48,6 @@ li {
   text-align: left;
 }
 
-p {
-  margin: 2px;
-  color: #000000;
-}
-
 /* ======================
 Dark Mode
 ======================*/
@@ -84,16 +79,6 @@ header.dark-mode {
 
 #dark-mode-toggle.dark-mode {
   background-color: #444444;
-  color: #f0f0f0;
-}
-
-.card.dark-mode {
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-}
-
-.card-info.dark-mode {
-  background-color: #2a2a2a;
   color: #f0f0f0;
 }
 
@@ -134,14 +119,14 @@ Search Bar
 #search-section {
   margin-bottom: 40px;
   width: 100%;
+  justify-items: center;
 }
 
 #card-search-bar {
   display: flex;
+  width: 100%;
   gap: 10px;
   padding: 1rem;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
 }
 
@@ -161,26 +146,12 @@ Search Bar
   transition: background-color 0.2s;
 }
 
-#card-search-bar select,
-#card-search-bar input {
-  padding: 0.5rem;
-  width: 90%;
-  margin: auto;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
 #deck-folders-section input {
   padding: 0.5rem;
   min-width: 25%;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-#search-button {
-  margin: auto;
 }
 
 #autocomplete-results {
@@ -218,7 +189,7 @@ Results/Deck Grid
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  overflow: auto; /* Enable scrolling if necessary */
+  overflow: visible; /* Enable scrolling if necessary */
   width: 100%; /* Make it span the full width */
 }
 
@@ -255,10 +226,12 @@ DeckList Functions
   flex-wrap: wrap;
   width: 100%;
   margin: 10px auto;
+  justify-content: center;
 }
 
 #deck-functions button {
   min-width: 135px;
+  margin: 5px;
 }
 
 #deck-section {
@@ -273,6 +246,7 @@ DeckList Functions
   font-size: 16px;
   width: 50px;
   height: 50px;
+  margin-right: 5px;
   justify-self: center;
   font-size: 16px;
   font-weight: bold;
@@ -285,6 +259,10 @@ DeckList Functions
 
 .add-button:hover {
   background-color: #c4e0ff;
+}
+
+#decks-page-button {
+  width: 135px;
 }
 
 .remove-button {
@@ -343,14 +321,25 @@ Card Layout
 }
 
 .card-info {
+  display: inline-flex;
   position: relative;
   text-align: center;
   align-items: center;
   font-weight: bold;
-  margin-bottom: 10px;
-  color: #000000;
 }
 
+.card-info p {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #0078d7;
+  background-color: white;
+  border-radius: 20px;
+  color: #000000;
+}
 /* ======================
 Overlay/Expanded  Card
 ======================*/
@@ -438,11 +427,12 @@ Media Queries
     margin: 10px auto;
     justify-content: space-evenly;
   }
+
   #card-search-bar {
+    display: flex;
     flex-direction: column; /* Stack elements vertically */
-    align-items: flex-start; /* Align items to the left */
-    gap: 15px;
-    border-radius: 10px;
+    justify-items: center;
+    width: 80%;
   }
 
   #results-grid,

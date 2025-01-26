@@ -92,10 +92,12 @@ function addToDeck(
 
       cardDiv.innerHTML = `
         <div class="card-info">
-          <p>${name} [<span class="count">1</span>]</p>
-          <div class="button-container">
+          <p>x <span class="count">1</span></p>
+          <button class="add-button" onclick="addToDeck('${id}', '${name.replace(
+        /'/g,
+        "\\'"
+      )}', '${image}', '${supertype}', '${rarity}', '${setId}', '${cardNumber}', '${ptcgoCode}')">+1</button>
             <button class="remove-button" onclick="removeFromDeck('${id}', '${name}')">-1</button>
-          </div>
         </div>  
         <div class="card-stack">
           <img src="${image}" alt="${name}" onclick="displayCardOverlay('${id}', '${image}')">
@@ -143,10 +145,12 @@ function addToDeck(
 
     cardDiv.innerHTML = `
       <div class="card-info">
-        <p>${name} [<span class="count">1</span>]</p>
-        <div class="button-container">
+        <p>x <span class="count">1</span></p>
+        <button class="add-button" onclick="addToDeck('${id}', '${name.replace(
+      /'/g,
+      "\\'"
+    )}', '${image}', '${supertype}', '${rarity}', '${setId}', '${cardNumber}', '${ptcgoCode}')">+1</button>
           <button class="remove-button" onclick="removeFromDeck('${id}', '${name}')">-1</button>
-        </div>
       </div>  
       <div class="card-stack">
         <img src="${image}" alt="${name}" onclick="displayCardOverlay('${id}', '${image}')">

@@ -427,10 +427,10 @@ function initializeApp() {
 
         cardDiv.innerHTML = `
       <div class="card-info">
-        <p>${card.name} [<span class="count">${card.count}</span>]</p>
-        <div class="button-container">
+        <p>x <span class="count">${card.count}</span></p>
+        
           <button class="remove-button" onclick="removeFromDeck('${card.id}')">-1</button>
-        </div>
+        
       </div>
       <div class="card-stack">
         <img src="${card.image}" alt="${card.name}">

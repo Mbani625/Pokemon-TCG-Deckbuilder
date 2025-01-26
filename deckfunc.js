@@ -72,18 +72,13 @@ document.getElementById("export-text").addEventListener("click", () => {
 
   deckCards.forEach((card) => {
     const count = card.querySelector(".count").textContent; // Number of copies
-    const name = card
-      .querySelector(".card-info p")
-      .textContent.split(" [")[0]
-      .trim(); // Card name
+    const name = card.dataset.name || "Unknown Name"; // Card name from dataset
     const ptcgoCode = card.dataset.ptcgoCode || "Unknown Code";
-    let cardNumber = card.dataset.cardNumber || "Unknown Number";
+    const cardNumber = card.dataset.cardNumber || "Unknown Number";
 
-    // Extract numeric portion of cardNumber
-    const numericCardNumber = cardNumber.replace(/\D/g, ""); // Remove all non-numeric characters
-
-    const cardLine = `${count} ${name} ${ptcgoCode} ${numericCardNumber}`;
-    const type = card.dataset.type.toLowerCase();
+    // Construct card line
+    const cardLine = `${count} ${name} ${ptcgoCode} ${cardNumber}`;
+    const type = card.dataset.type?.toLowerCase();
 
     if (type === "pokémon") groupedCards.Pokémon.push(cardLine);
     else if (type === "trainer") groupedCards.Trainer.push(cardLine);
@@ -119,86 +114,56 @@ document.getElementById("copy-decklist").addEventListener("click", () => {
   const deckGrid = document.getElementById("deck-grid");
   const deckCards = Array.from(deckGrid.children);
 
-  // Construct the decklist as text
-  const deckText = deckCards.map((card) => {
-    const count = card.querySelector(".count").textContent; // Number of copies
-    const name = card
-      .querySelector(".card-info p")
-      .textContent.split(" [")[0]
-      .trim(); // Card name
-    const setId = card.dataset.setId || "Unknown Set"; // Set ID
-    const cardNumber = card.dataset.cardNumber || "Unknown Number"; // Card number
-
-    return `${count} ${name} ${setId} ${cardNumber}`;
-  });
-
-  // If the deck is empty, show an alert
-  if (deckText.length === 0) {
+  if (deckCards.length === 0) {
     alert("Your deck is empty. Add cards before copying.");
     return;
   }
 
-  // Copy the decklist to the clipboard
-  document.getElementById("copy-decklist").addEventListener("click", () => {
-    const deckGrid = document.getElementById("deck-grid");
-    const deckCards = Array.from(deckGrid.children);
+  // Group cards by type
+  const groupedCards = { Pokémon: [], Trainer: [], Energy: [] };
 
-    if (deckCards.length === 0) {
-      alert("Your deck is empty. Add cards before copying.");
-      return;
-    }
+  deckCards.forEach((card) => {
+    const count = card.querySelector(".count").textContent; // Number of copies
+    const name = card.dataset.name || "Unknown Name"; // Card name from dataset
+    const ptcgoCode = card.dataset.ptcgoCode || "Unknown Code";
+    const cardNumber = card.dataset.cardNumber || "Unknown Number";
 
-    // Group cards by type
-    const groupedCards = { Pokémon: [], Trainer: [], Energy: [] };
+    // Construct card line
+    const cardLine = `${count} ${name} ${ptcgoCode} ${cardNumber}`;
+    const type = card.dataset.type?.toLowerCase();
 
-    deckCards.forEach((card) => {
-      const count = card.querySelector(".count").textContent; // Number of copies
-      const name = card
-        .querySelector(".card-info p")
-        .textContent.split(" [")[0]
-        .trim();
-      const ptcgoCode = card.dataset.ptcgoCode || "Unknown Code";
-      let cardNumber = card.dataset.cardNumber || "Unknown Number";
-
-      // Extract numeric portion of cardNumber
-      const numericCardNumber = cardNumber.replace(/\D/g, ""); // Remove all non-numeric characters
-
-      const cardLine = `${count} ${name} ${ptcgoCode} ${numericCardNumber}`;
-      const type = card.dataset.type.toLowerCase();
-
-      if (type === "pokémon") groupedCards.Pokémon.push(cardLine);
-      else if (type === "trainer") groupedCards.Trainer.push(cardLine);
-      else if (type === "energy") groupedCards.Energy.push(cardLine);
-    });
-
-    // Format decklist with headers and grouped cards
-    let deckString = "";
-    let totalCards = 0;
-
-    Object.entries(groupedCards).forEach(([group, cards]) => {
-      if (cards.length > 0) {
-        deckString += `${group}: ${cards.length}\n`; // Add header with count
-        deckString += cards.join("\n") + "\n\n"; // Add card details
-        totalCards += cards.reduce(
-          (sum, line) => sum + parseInt(line.split(" ")[0]),
-          0
-        ); // Sum card counts
-      }
-    });
-
-    deckString += `Total Cards: ${totalCards}`;
-
-    // Copy formatted decklist to clipboard
-    navigator.clipboard
-      .writeText(deckString)
-      .then(() => {
-        alert("Decklist copied to clipboard in Pokémon TCG Live format!");
-      })
-      .catch((err) => {
-        console.error("Failed to copy decklist: ", err);
-        alert("Failed to copy decklist. Please try again.");
-      });
+    if (type === "pokémon") groupedCards.Pokémon.push(cardLine);
+    else if (type === "trainer") groupedCards.Trainer.push(cardLine);
+    else if (type === "energy") groupedCards.Energy.push(cardLine);
   });
+
+  // Format decklist with headers and grouped cards
+  let deckString = "";
+  let totalCards = 0;
+
+  Object.entries(groupedCards).forEach(([group, cards]) => {
+    if (cards.length > 0) {
+      deckString += `${group}: ${cards.length}\n`;
+      deckString += cards.join("\n") + "\n\n";
+      totalCards += cards.reduce(
+        (sum, line) => sum + parseInt(line.split(" ")[0]),
+        0
+      );
+    }
+  });
+
+  deckString += `Total Cards: ${totalCards}`;
+
+  // Copy formatted decklist to clipboard
+  navigator.clipboard
+    .writeText(deckString)
+    .then(() => {
+      alert("Decklist copied to clipboard in Pokémon TCG Live format!");
+    })
+    .catch((err) => {
+      console.error("Failed to copy decklist: ", err);
+      alert("Failed to copy decklist. Please try again.");
+    });
 });
 
 document.getElementById("clear-decklist").addEventListener("click", () => {

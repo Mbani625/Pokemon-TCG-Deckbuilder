@@ -27,13 +27,13 @@ async function loadCurrentDeckToGrid(deckGrid) {
   deckGrid.innerHTML = ""; // Clear the grid
 
   for (const card of currentDeck) {
-    if (!card.id || !card.name || !card.image || card.count == null) {
+    if (!card.id || !card.image || card.count == null) {
       console.warn("Incomplete card data:", card);
       continue;
     }
 
     try {
-      // Fetch detailed card data from the API
+      // Fetch card details from the API for additional data
       const response = await fetch(
         `https://api.pokemontcg.io/v2/cards/${card.id}`,
         {
@@ -52,6 +52,7 @@ async function loadCurrentDeckToGrid(deckGrid) {
       const cardDiv = document.createElement("div");
       cardDiv.className = "card";
       cardDiv.dataset.id = card.id;
+      cardDiv.dataset.name = cardDetails.name; // Store name in dataset
       cardDiv.dataset.type = cardDetails.supertype?.toLowerCase() || "unknown";
       cardDiv.dataset.rarity = cardDetails.rarity?.toLowerCase() || "unknown";
       cardDiv.dataset.setId = cardDetails.set?.id || "Unknown Set";
@@ -64,20 +65,29 @@ async function loadCurrentDeckToGrid(deckGrid) {
       for (let i = 0; i < card.count; i++) {
         const stackedImage = document.createElement("img");
         stackedImage.src = card.image;
-        stackedImage.alt = `${card.name} (Stacked)`;
+        stackedImage.alt = `${cardDetails.name} (Stacked)`;
         stackedImage.className = "stacked-card";
         stackedImage.style.transform = `translateY(${i * 8}px)`; // Offset for stacking
         cardStack.appendChild(stackedImage);
       }
 
-      // Add card info
+      // Add card info with buttons
       const cardInfo = document.createElement("div");
       cardInfo.className = "card-info";
       cardInfo.innerHTML = `
-        <p>${card.name} [<span class="count">${card.count}</span>]</p>
-        <div class="button-container">
-          <button class="remove-button" onclick="removeFromDeck('${card.id}', '${card.name}')">-1</button>
-        </div>
+        <p>
+          x <span class="count">${card.count}</span></p>
+          <button class="add-button" onclick="addToDeck('${
+            card.id
+          }', '${cardDetails.name.replace(/'/g, "\\'")}', '${card.image}', '${
+        cardDetails.supertype
+      }', '${cardDetails.rarity}', '${cardDetails.set?.id}', '${
+        cardDetails.number
+      }', '${cardDetails.set?.ptcgoCode}')">+1</button>
+          <button class="remove-button" onclick="removeFromDeck('${
+            card.id
+          }')">-1</button>
+        
       `;
 
       // Append elements to the card container
