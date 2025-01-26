@@ -264,6 +264,7 @@ DeckList Functions
 
 #decks-page-button,
 #see-deck-button,
+#index-page-button,
 #return-to-main {
   width: 135px;
   margin: 5px;
@@ -509,6 +510,12 @@ Folders
   background-color: #0056b3;
 }
 
+.folder-icon {
+  background-color: transparent; /* Makes the background transparent */
+  border: none; /* Removes any border around the icon */
+  scale: 1.25;
+}
+
 .dialog {
   position: fixed;
   top: 50%;
@@ -570,6 +577,20 @@ Folders
 
 .dialog-buttons button:hover {
   background-color: #005bb5;
+}
+
+#create-new-deck-button {
+  font-size: 16px;
+  width: 135px;
+  height: 40px;
+  margin-right: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #0078d7;
+  border: 1px solid #0078d7;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 /* ======================
