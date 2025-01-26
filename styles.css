@@ -495,13 +495,6 @@ Media Queries
   }
 }
 
-@media (min-width: 768px) {
-  #results-grid,
-  #deck-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
-}
-
 /* ======================
 Folders
 ======================*/
