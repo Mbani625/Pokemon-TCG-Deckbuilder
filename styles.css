@@ -496,6 +496,7 @@ Media Queries
     background-color: white;
     justify-items: center;
   }
+
   #deck-section .remove-button {
     padding: 6px 12px;
     width: 200px;
@@ -513,6 +514,14 @@ Media Queries
 
   #deck-section .remove-button:hover {
     background-color: #d1403b;
+  }
+
+  .details-list {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 12px;
+    gap: 20px;
+    width: 100%;
   }
 }
 
