@@ -40,7 +40,6 @@ main {
   min-height: calc(100vh - 200px); /* Adjust to fit footer and header spacing */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   position: relative;
 }
 
@@ -284,7 +283,7 @@ DeckList Functions
   padding-bottom: 50px; /* Prevent stack from touching the footer */
 }
 
-header button,
+main button,
 #deck-section button,
 #search-section button,
 #deck-folders-section button {
@@ -521,7 +520,8 @@ Folders
   cursor: pointer;
   margin: 10px;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .folder:hover {
@@ -532,6 +532,7 @@ Folders
   position: fixed;
   top: 50%;
   left: 50%;
+  width: 300px;
   transform: translate(-50%, -50%);
   background: white;
   padding: 20px;
@@ -542,6 +543,13 @@ Folders
 
 .dialog.hidden {
   display: none;
+}
+
+.dialog h2 {
+  justify-self: center;
+  margin: 30px;
+  font-size: xx-large;
+  font-weight: bolder;
 }
 
 .dialog h3 {
@@ -555,7 +563,7 @@ Folders
 
 .dialog input,
 .dialog select {
-  width: 100%;
+  width: 90%;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
@@ -564,7 +572,7 @@ Folders
 
 .dialog-buttons {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -575,6 +583,8 @@ Folders
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .dialog-buttons button:hover {

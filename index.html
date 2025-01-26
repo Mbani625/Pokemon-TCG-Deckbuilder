@@ -9,11 +9,11 @@
   <body class="light-mode">
     <header>
       <h2>Pokemon TCG Deckbuilder</h2>
-      <button id="decks-page-button">Decks</button>
       <button id="dark-mode-toggle">🌙 Dark Mode</button>
     </header>
 
     <main>
+      <button id="decks-page-button">My Decks</button>
       <!-- Search Section -->
       <section id="search-section">
         <h2>Card Search</h2>
@@ -57,14 +57,13 @@
         </div>
       </section>
       <div id="save-deck-dialog" class="dialog hidden">
-        <h3>Save Deck</h3>
         <label for="deck-name-input">New Deck Name:</label>
         <input
           type="text"
           id="deck-name-input"
           placeholder="Enter new deck name"
         />
-
+        <h2>OR</h2>
         <label for="folder-dropdown">Overwrite Existing Deck:</label>
         <select id="folder-dropdown">
           <option value="">Select a Deck to Overwrite</option>
