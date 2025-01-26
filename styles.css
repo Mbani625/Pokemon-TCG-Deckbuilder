@@ -262,8 +262,11 @@ DeckList Functions
   background-color: #c4e0ff;
 }
 
-#decks-page-button {
+#decks-page-button,
+#see-deck-button,
+#return-to-main {
   width: 135px;
+  margin: 5px;
 }
 
 .remove-button {
@@ -563,4 +566,29 @@ Folders
 
 .dialog-buttons button:hover {
   background-color: #005bb5;
+}
+
+/* ======================
+FullDeck Display
+======================*/
+.full-deck-grid {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+}
+.fulldeck-card {
+  padding: 10px;
+  text-align: center;
+  height: 400px;
+  width: 245px;
+}
+
+.fulldeck-stacked-card {
+  position: relative;
+}
+.fulldeck-stacked-card img {
+  position: absolute;
+  top: 0;
+  left: 0;
 }

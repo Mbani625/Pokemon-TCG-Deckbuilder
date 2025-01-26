@@ -42,3 +42,8 @@ document.addEventListener("touchstart", (event) => {
 
   lastTouchTime = now;
 });
+
+// Add event listener to the "See Deck" button
+document.getElementById("see-deck-button").addEventListener("click", () => {
+  window.location.href = "fulldeck.html"; // Navigate to the full deck page
+});
