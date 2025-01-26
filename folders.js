@@ -78,32 +78,6 @@ function initializeDecksPage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const toggleButton = document.getElementById("dark-mode-toggle");
-  const body = document.body;
-
-  // Check for saved preference in localStorage
-  if (localStorage.getItem("darkMode") === "enabled") {
-    body.classList.add("dark-mode");
-    toggleButton.classList.add("dark-mode");
-    toggleButton.textContent = "☀️ Light Mode";
-  }
-
-  // Toggle Dark Mode
-  toggleButton.addEventListener("click", () => {
-    body.classList.toggle("dark-mode");
-    toggleButton.classList.toggle("dark-mode");
-
-    if (body.classList.contains("dark-mode")) {
-      localStorage.setItem("darkMode", "enabled");
-      toggleButton.textContent = "☀️ Light Mode";
-    } else {
-      localStorage.setItem("darkMode", "disabled");
-      toggleButton.textContent = "🌙 Dark Mode";
-    }
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
   const backButton = document.getElementById("index-page-button");
   if (backButton) {
     backButton.addEventListener("click", () => {
