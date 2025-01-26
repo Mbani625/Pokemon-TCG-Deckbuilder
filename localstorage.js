@@ -76,7 +76,7 @@ async function loadCurrentDeckToGrid(deckGrid) {
       cardInfo.innerHTML = `
         <p>${card.name} [<span class="count">${card.count}</span>]</p>
         <div class="button-container">
-          <button class="remove-button" onclick="removeFromDeck('${card.id}', '${card.name}')">Remove 1</button>
+          <button class="remove-button" onclick="removeFromDeck('${card.id}', '${card.name}')">-1</button>
         </div>
       `;
 

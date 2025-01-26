@@ -261,14 +261,6 @@ DeckList Functions
   min-width: 135px;
 }
 
-.button-container {
-  width: 80%;
-  justify-self: center;
-  button {
-    width: 135px;
-  }
-}
-
 #deck-section {
   height: auto;
   margin-top: 10px;
@@ -277,51 +269,38 @@ DeckList Functions
   text-align: center;
 }
 
-.add-button,
-.remove-button {
-  padding: 8px;
+.add-button {
   font-size: 16px;
   width: 50px;
   height: 50px;
-  margin: auto;
   justify-self: center;
-}
-
-main button,
-#deck-section button,
-#search-section button,
-#deck-folders-section button {
-  padding: 6px 12px;
-  margin: 5px;
   font-size: 16px;
   font-weight: bold;
-  background-color: #0078d7;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  color: #0078d7;
+  border: 1px solid #0078d7;
+  border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-#deck-section button:hover {
-  background-color: #0056b3;
+.add-button:hover {
+  background-color: #c4e0ff;
 }
 
-#deck-section .remove-button {
-  padding: 6px 12px;
-  margin: 4px;
+.remove-button {
+  width: 50px;
+  height: 50px;
   font-size: 16px;
   font-weight: bold;
-  background-color: #ff4b45;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  color: #ff4b45;
+  border: 1px solid #ff4b45;
+  border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-#deck-section .remove-button:hover {
-  background-color: #d1403b;
+.remove-button:hover {
+  background-color: #ffb6b3;
 }
 
 /* ======================
@@ -491,21 +470,11 @@ Media Queries
   .card {
     position: relative;
     height: auto;
-    width: 170px;
+    width: 165px;
     text-align: center;
     overflow: visible; /* Ensure the card container allows stacked cards to display fully */
-    padding: 10px; /* Add extra padding to account for taller stacks */
+    padding: 5px; /* Add extra padding to account for taller stacks */
     border-radius: 8px;
-  }
-
-  .add-button,
-  .remove-button {
-    padding: 8px;
-    font-size: 16px;
-    width: 50px;
-    height: 50px;
-    margin: auto;
-    justify-self: center;
   }
 
   .expanded-card-container {
@@ -515,25 +484,6 @@ Media Queries
     border-radius: 10px;
     background-color: white;
     justify-items: center;
-  }
-
-  #deck-section .remove-button {
-    padding: 6px 12px;
-    width: 200px;
-    height: 40px;
-    margin: 5px auto;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #ff4b45;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  #deck-section .remove-button:hover {
-    background-color: #d1403b;
   }
 
   .details-list {
