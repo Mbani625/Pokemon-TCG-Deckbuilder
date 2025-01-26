@@ -11,6 +11,11 @@ const pokemonCatalog = []; // Holds unique Pokémon names
 const trainerCatalog = []; // Holds unique Trainer card names
 const setCache = {}; // Cache to store setId -> ptcgoCode mappings
 
+function initializeApp() {
+  console.log("App initialized");
+  // Add app initialization logic here
+}
+
 async function fetchAndCacheSets() {
   try {
     const response = await fetch("https://api.pokemontcg.io/v2/sets", {
@@ -32,18 +37,6 @@ async function fetchAndCacheSets() {
 
 // Fetch and cache sets on page load
 document.addEventListener("DOMContentLoaded", fetchAndCacheSets);
-
-document.addEventListener("DOMContentLoaded", () => {
-  const toggleButton = document.getElementById("dark-mode-toggle");
-  const body = document.body;
-
-  // Check for saved preference in localStorage
-  if (localStorage.getItem("darkMode") === "enabled") {
-    body.classList.add("dark-mode");
-    toggleButton.classList.add("dark-mode");
-    toggleButton.textContent = "☀️ Light Mode";
-  }
-});
 
 // Fetch unique Pokémon names
 const fetchPokemonCatalog = async () => {
@@ -154,8 +147,10 @@ async function fetchLegalSets(format) {
   }
 }
 
-document.getElementById("decks-page-button").addEventListener("click", () => {
-  window.location.href = "decks.html";
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("decks-page-button").addEventListener("click", () => {
+    window.location.href = "decks.html";
+  });
 });
 
 // Search Function
@@ -243,13 +238,13 @@ function showSaveDeckDialog() {
   const dialog = document.getElementById("save-deck-dialog");
   const dropdown = document.getElementById("folder-dropdown");
 
-  // Populate dropdown with folder names
-  const folders = JSON.parse(localStorage.getItem("deckFolders")) || [];
-  dropdown.innerHTML = '<option value="">Select a Folder</option>';
-  folders.forEach((folder) => {
+  // Populate dropdown with existing decks
+  const savedDecks = getAllDecks(); // Function from localstorage.js
+  dropdown.innerHTML = '<option value="">Select a Deck to Overwrite</option>';
+  Object.keys(savedDecks).forEach((deckName) => {
     const option = document.createElement("option");
-    option.value = folder;
-    option.textContent = folder;
+    option.value = deckName;
+    option.textContent = deckName;
     dropdown.appendChild(option);
   });
 
@@ -264,62 +259,126 @@ function hideSaveDeckDialog() {
 
 // Save the deck when "Save" is clicked
 function saveDeck() {
-  const deckName = document.getElementById("deck-name-input").value.trim();
-  const folderName = document.getElementById("folder-dropdown").value;
+  const newDeckName = document.getElementById("deck-name-input").value.trim();
+  const selectedDeckName = document.getElementById("folder-dropdown").value;
 
-  if (!deckName && !folderName) {
-    alert("Please enter a deck name or select a folder.");
+  // Ensure only one input is used
+  if (newDeckName && selectedDeckName) {
+    alert("Please use either the input field or the dropdown, not both.");
     return;
   }
 
-  if (deckName && folderName) {
-    alert("Please either enter a deck name or select a folder, not both.");
+  // Validate input
+  if (!newDeckName && !selectedDeckName) {
+    alert("Please provide a name for the deck.");
     return;
   }
 
-  if (deckName) {
-    saveDeckToFolder(deckName, "Default"); // Use Default folder for unnamed folders
-  } else if (folderName) {
-    saveDeckToFolder("Unnamed Deck", folderName); // Use a default name for unnamed decks
-  }
+  const deckName = newDeckName || selectedDeckName; // Use the input or selected value
 
+  // Retrieve current cards from the deck grid
+  const deckGrid = document.getElementById("deck-grid");
+  const cards = Array.from(deckGrid.children).map((card) => ({
+    id: card.dataset.id,
+    name: card.querySelector(".card-info p").textContent.split(" [")[0].trim(),
+    count: parseInt(card.querySelector(".count").textContent),
+    image: card.querySelector("img").src,
+  }));
+
+  // Save or update the deck
+  saveDeckToLocalStorage(deckName, cards);
+
+  alert(`Deck "${deckName}" has been ${newDeckName ? "created" : "updated"}.`);
   hideSaveDeckDialog();
 }
 
-// Attach event listeners
-function setupEventListeners() {
+// Save deck to localStorage
+function saveDeckToLocalStorage(deckName, cards) {
+  const savedDecks = getAllDecks();
+  savedDecks[deckName] = cards; // Update the deck with new cards
+  localStorage.setItem("savedDecks", JSON.stringify(savedDecks));
+}
+
+// Attach dialog event listeners
+document
+  .getElementById("save-deck-confirm")
+  .addEventListener("click", saveDeck);
+document
+  .getElementById("save-dialog-cancel")
+  .addEventListener("click", hideSaveDeckDialog);
+
+// Show dialog when "Save Deck" button is clicked
+document
+  .getElementById("save-deck-button")
+  .addEventListener("click", showSaveDeckDialog);
+
+function initializeApp() {
+  const deckGrid = document.getElementById("deck-grid");
+
+  // Load the current deck
+  loadCurrentDeckToGrid(deckGrid);
+
+  // Attach other event listeners, like for saving decks
   document
     .getElementById("save-deck-button")
     .addEventListener("click", showSaveDeckDialog);
-  document
-    .getElementById("save-dialog-cancel")
-    .addEventListener("click", hideSaveDeckDialog);
-  document
-    .getElementById("save-deck-confirm")
-    .addEventListener("click", saveDeck);
-}
 
-function initializeApp() {
-  loadDeckFromLocalStorage();
-  setupEventListeners();
+  // Dark Mode Initialization
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleButton = document.getElementById("dark-mode-toggle");
+    const body = document.body;
 
-  // Maintain dark mode setting
-  const darkModeToggle = document.getElementById("dark-mode-toggle");
-  const body = document.body;
+    // Check for saved preference in localStorage
+    if (localStorage.getItem("darkMode") === "enabled") {
+      body.classList.add("dark-mode");
+      toggleButton.classList.add("dark-mode");
+      toggleButton.textContent = "☀️ Light Mode";
+    }
 
-  if (localStorage.getItem("darkMode") === "enabled") {
-    body.classList.add("dark-mode");
-    darkModeToggle.textContent = "☀️ Light Mode";
-  }
+    // Toggle Dark Mode
+    toggleButton.addEventListener("click", () => {
+      body.classList.toggle("dark-mode");
+      toggleButton.classList.toggle("dark-mode");
 
-  darkModeToggle.addEventListener("click", () => {
-    const isDarkMode = body.classList.toggle("dark-mode");
-    localStorage.setItem("darkMode", isDarkMode ? "enabled" : "disabled");
-    darkModeToggle.textContent = isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode";
+      if (body.classList.contains("dark-mode")) {
+        localStorage.setItem("darkMode", "enabled");
+        toggleButton.textContent = "☀️ Light Mode";
+      } else {
+        localStorage.setItem("darkMode", "disabled");
+        toggleButton.textContent = "🌙 Dark Mode";
+      }
+    });
+
+    // Load the current deck into the deck grid
+    function loadCurrentDeckToGrid(deckGrid) {
+      const currentDeck = JSON.parse(localStorage.getItem("deckList")); // Retrieve the deck
+      if (!currentDeck) {
+        console.warn("No deck loaded from localStorage.");
+        return;
+      }
+
+      deckGrid.innerHTML = ""; // Clear the grid
+
+      currentDeck.forEach((card) => {
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "card";
+        cardDiv.dataset.id = card.id;
+
+        cardDiv.innerHTML = `
+      <div class="card-info">
+        <p>${card.name} [<span class="count">${card.count}</span>]</p>
+        <div class="button-container">
+          <button class="remove-button" onclick="removeFromDeck('${card.id}')">Remove 1</button>
+        </div>
+      </div>
+      <div class="card-stack">
+        <img src="${card.image}" alt="${card.name}">
+      </div>
+    `;
+
+        deckGrid.appendChild(cardDiv);
+      });
+    }
   });
-
-  console.log("Application initialized.");
 }
-
-// Run the initialization on page load
 document.addEventListener("DOMContentLoaded", initializeApp);

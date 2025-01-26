@@ -1,151 +1,102 @@
-// Save the current deck under a specific folder and name
-function saveDeckToFolder(deckName, folderName) {
-  const deckGrid = document.getElementById("deck-grid");
-  const cards = Array.from(deckGrid.children).map((card) => ({
-    id: card.dataset.id,
-    name: card.querySelector(".card-info p").textContent.split(" [")[0].trim(),
-    count: parseInt(card.querySelector(".count").textContent),
-    image: card.querySelector("img").src,
-    supertype: card.dataset.type,
-    rarity: card.dataset.rarity,
-    setId: card.dataset.setId,
-    cardNumber: card.dataset.cardNumber,
-    ptcgoCode: card.dataset.ptcgoCode,
-  }));
-
-  const savedDecks = JSON.parse(localStorage.getItem(folderName)) || {};
+// Save a deck to localStorage
+function saveDeck(deckName, cards) {
+  const savedDecks = JSON.parse(localStorage.getItem("savedDecks")) || {};
   savedDecks[deckName] = cards;
-
-  localStorage.setItem(folderName, JSON.stringify(savedDecks));
-  alert(`Deck saved as "${deckName}" in folder "${folderName}".`);
+  localStorage.setItem("savedDecks", JSON.stringify(savedDecks));
+  alert(`Deck "${deckName}" has been saved.`);
 }
 
-// Create a new folder
-function createFolder(folderName) {
-  const folders = JSON.parse(localStorage.getItem("deckFolders")) || [];
-  if (!folders.includes(folderName)) {
-    folders.push(folderName);
-    localStorage.setItem("deckFolders", JSON.stringify(folders));
-    alert(`Folder "${folderName}" created.`);
-  } else {
-    alert("Folder already exists.");
+// Load a specific deck by name
+function loadDeck(deckName) {
+  const savedDecks = JSON.parse(localStorage.getItem("savedDecks")) || {};
+  return savedDecks[deckName] || null;
+}
+
+// Get all saved decks
+function getAllDecks() {
+  return JSON.parse(localStorage.getItem("savedDecks")) || {};
+}
+
+async function loadCurrentDeckToGrid(deckGrid) {
+  const currentDeck = JSON.parse(localStorage.getItem("deckList")); // Retrieve the deck
+  if (!currentDeck) {
+    console.warn("No deck loaded from localStorage.");
+    return;
   }
-}
 
-// Load deck folders
-function loadDeckFolders() {
-  const folders = JSON.parse(localStorage.getItem("deckFolders")) || [];
-  return folders;
-}
+  deckGrid.innerHTML = ""; // Clear the grid
 
-// Load a specific deck from a folder
-function loadDeckFromFolder(folderName, deckName) {
-  const folderDecks = JSON.parse(localStorage.getItem(folderName)) || {};
-  const deck = folderDecks[deckName];
-  if (deck) {
-    localStorage.setItem("deckList", JSON.stringify(deck));
-    alert(`Deck "${deckName}" loaded from folder "${folderName}".`);
-    window.location.href = "index.html";
-  } else {
-    alert("Deck not found in the selected folder.");
-  }
-}
+  for (const card of currentDeck) {
+    if (!card.id || !card.name || !card.image || card.count == null) {
+      console.warn("Incomplete card data:", card);
+      continue;
+    }
 
-// Load deck from localStorage
-function loadDeckFromLocalStorage() {
-  const storedDeck = JSON.parse(localStorage.getItem("deckList"));
-  if (storedDeck) {
-    const deckGrid = document.getElementById("deck-grid");
-    deckGrid.innerHTML = "";
-    storedDeck.forEach((card) => {
+    try {
+      // Fetch detailed card data from the API
+      const response = await fetch(
+        `https://api.pokemontcg.io/v2/cards/${card.id}`,
+        {
+          headers: { "X-Api-Key": "YOUR_API_KEY" }, // Replace with your actual API key
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch card data for ID: ${card.id}`);
+      }
+
+      const cardData = await response.json();
+      const cardDetails = cardData.data;
+
+      // Create the card container
       const cardDiv = document.createElement("div");
       cardDiv.className = "card";
       cardDiv.dataset.id = card.id;
-      cardDiv.dataset.type = card.supertype.toLowerCase();
-      cardDiv.dataset.rarity = card.rarity;
-      cardDiv.dataset.setId = card.setId;
-      cardDiv.dataset.ptcgoCode = card.ptcgoCode;
-      cardDiv.dataset.cardNumber = card.cardNumber;
+      cardDiv.dataset.type = cardDetails.supertype?.toLowerCase() || "unknown";
+      cardDiv.dataset.rarity = cardDetails.rarity?.toLowerCase() || "unknown";
+      cardDiv.dataset.setId = cardDetails.set?.id || "Unknown Set";
+      cardDiv.dataset.ptcgoCode = cardDetails.set?.ptcgoCode || "Unknown Code";
+      cardDiv.dataset.cardNumber = cardDetails.number || "Unknown Number";
 
-      cardDiv.innerHTML = `
-        <div class="card-info">
-          <p>${card.name} [<span class="count">${card.count}</span>]</p>
-          <div class="button-container">
-            <button class="add-button" onclick="displayCardOverlay('${card.id}', '${card.image}')">More Info</button>
-            <button class="remove-button" onclick="removeFromDeck('${card.id}', '${card.name}')">Remove 1</button>
-          </div>
-        </div>
-        <div class="card-stack">
-          <img src="${card.image}" alt="${card.name}">
-        </div>
-      `;
-
-      const cardStackContainer = cardDiv.querySelector(".card-stack");
-      const cardCount = parseInt(card.count, 10);
-      for (let i = 1; i < cardCount; i++) {
+      // Add the card stack
+      const cardStack = document.createElement("div");
+      cardStack.className = "card-stack";
+      for (let i = 0; i < card.count; i++) {
         const stackedImage = document.createElement("img");
         stackedImage.src = card.image;
         stackedImage.alt = `${card.name} (Stacked)`;
         stackedImage.className = "stacked-card";
-        stackedImage.style.transform = `translateY(${i * 10}px)`;
-        cardStackContainer.appendChild(stackedImage);
+        stackedImage.style.transform = `translateY(${i * 10}px)`; // Offset for stacking
+        cardStack.appendChild(stackedImage);
       }
 
-      deckGrid.appendChild(cardDiv);
-    });
-    console.log("Deck loaded from localStorage.");
-  }
-}
-
-// Load the current deck from localStorage to the grid
-function loadCurrentDeck() {
-  const storedDeck = JSON.parse(localStorage.getItem("deckList"));
-  if (storedDeck) {
-    const deckGrid = document.getElementById("deck-grid");
-    deckGrid.innerHTML = "";
-    storedDeck.forEach((card) => {
-      const cardDiv = document.createElement("div");
-      cardDiv.className = "card";
-      cardDiv.dataset.id = card.id;
-      cardDiv.dataset.type = card.supertype.toLowerCase();
-      cardDiv.dataset.rarity = card.rarity;
-      cardDiv.dataset.setId = card.setId;
-      cardDiv.dataset.ptcgoCode = card.ptcgoCode;
-      cardDiv.dataset.cardNumber = card.cardNumber;
-
-      cardDiv.innerHTML = `
-        <div class="card-info">
-          <p>${card.name} [<span class="count">${card.count}</span>]</p>
-          <div class="button-container">
-            <button class="add-button" onclick="displayCardOverlay('${card.id}', '${card.image}')">More Info</button>
-            <button class="remove-button" onclick="removeFromDeck('${card.id}', '${card.name}')">Remove 1</button>
-          </div>
-        </div>
-        <div class="card-stack">
-          <img src="${card.image}" alt="${card.name}">
+      // Add card info
+      const cardInfo = document.createElement("div");
+      cardInfo.className = "card-info";
+      cardInfo.innerHTML = `
+        <p>${card.name} [<span class="count">${card.count}</span>]</p>
+        <div class="button-container">
+          <button class="remove-button" onclick="removeFromDeck('${card.id}', '${card.name}')">Remove 1</button>
         </div>
       `;
 
-      const cardStackContainer = cardDiv.querySelector(".card-stack");
-      const cardCount = parseInt(card.count, 10);
-      for (let i = 1; i < cardCount; i++) {
-        const stackedImage = document.createElement("img");
-        stackedImage.src = card.image;
-        stackedImage.alt = `${card.name} (Stacked)`;
-        stackedImage.className = "stacked-card";
-        stackedImage.style.transform = `translateY(${i * 10}px)`;
-        cardStackContainer.appendChild(stackedImage);
-      }
+      // Append elements to the card container
+      cardDiv.appendChild(cardInfo);
+      cardDiv.appendChild(cardStack);
 
+      // Add the card container to the deck grid
       deckGrid.appendChild(cardDiv);
-    });
-    console.log("Deck loaded from localStorage.");
+    } catch (error) {
+      console.error(`Error loading card data for ID: ${card.id}`, error);
+    }
   }
 }
 
-// Export the functions to global scope if modules are not used
-window.saveDeckToFolder = saveDeckToFolder;
-window.createFolder = createFolder;
-window.loadDeckFolders = loadDeckFolders;
-window.loadDeckFromFolder = loadDeckFromFolder;
-window.loadCurrentDeck = loadCurrentDeck;
+// Export functions to global scope if not using modules
+window.saveDeck = saveDeck;
+window.loadDeck = loadDeck;
+window.getAllDecks = function getAllDecks() {
+  return JSON.parse(localStorage.getItem("savedDecks")) || {};
+};
+
+window.loadCurrentDeckToGrid = loadCurrentDeckToGrid;

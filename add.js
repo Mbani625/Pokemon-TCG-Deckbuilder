@@ -31,12 +31,20 @@ function addToDeck(
   // Check total copies of the card with the same name in the deck
   const totalCopiesWithName = Array.from(deckGrid.children).reduce(
     (count, card) => {
-      const cardName = card
-        .querySelector(".card-info p")
-        ?.textContent.split(" [")[0]
-        .trim(); // Extract the card name
-      return cardName?.toLowerCase() === name.toLowerCase()
-        ? count + parseInt(card.querySelector(".count").textContent)
+      // Safely check for the card info and count elements
+      const cardNameElement = card.querySelector(".card-info p");
+      const countElement = card.querySelector(".count");
+
+      if (!cardNameElement || !countElement) {
+        console.warn("Card info or count element is missing for a card:", card);
+        return count; // Skip this iteration if either element is missing
+      }
+
+      const cardName = cardNameElement.textContent.split(" [")[0].trim();
+      const cardCount = parseInt(countElement.textContent);
+
+      return cardName.toLowerCase() === name.toLowerCase()
+        ? count + cardCount
         : count;
     },
     0

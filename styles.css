@@ -214,15 +214,24 @@ Search Bar
 Results/Deck Grid
 ======================*/
 
+#deck-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  overflow: auto; /* Enable scrolling if necessary */
+  width: 100%; /* Make it span the full width */
+}
+
 #deck-grid {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  padding: 1rem;
-  border-radius: 4px;
-  max-height: calc(100vh - 250px);
-  overflow: auto;
+  flex-wrap: wrap; /* Ensures items wrap to the next line when space is insufficient */
+  gap: 15px; /* Add spacing between cards */
+  justify-content: center; /* Align items to the start of the container */
+  align-items: flex-start; /* Align cards to the top of each row */
+  width: 100%; /* Ensure it spans the full width */
+  height: auto;
+  overflow: visible; /* Prevent clipping of stacked cards */
 }
 
 #results-grid {
@@ -237,6 +246,7 @@ Results/Deck Grid
 
 #deck-grid .card {
   position: relative;
+  height: 460px;
 }
 
 #deck-grid .stacked-card {
@@ -501,12 +511,11 @@ Folders
 ======================*/
 
 .folder {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 45px;
   background-color: #0078d7;
   color: white;
   display: flex;
-  justify-content: center;
   align-items: center;
   border-radius: 8px;
   cursor: pointer;

@@ -58,17 +58,16 @@
       </section>
       <div id="save-deck-dialog" class="dialog hidden">
         <h3>Save Deck</h3>
-        <label for="deck-name-input">Deck Name:</label>
+        <label for="deck-name-input">New Deck Name:</label>
         <input
           type="text"
           id="deck-name-input"
-          placeholder="Enter deck name"
-          required
+          placeholder="Enter new deck name"
         />
 
-        <label for="folder-dropdown">Save to Folder:</label>
+        <label for="folder-dropdown">Overwrite Existing Deck:</label>
         <select id="folder-dropdown">
-          <option value="">Select a Folder</option>
+          <option value="">Select a Deck to Overwrite</option>
         </select>
 
         <div class="dialog-buttons">
@@ -81,9 +80,9 @@
       const deckGrid = document.getElementById("deck-grid");
     </script>
     <script src="localstorage.js"></script>
-    <script src="script.js"></script>
     <script src="add.js"></script>
     <script src="deckfunc.js"></script>
     <script src="overlay.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
