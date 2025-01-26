@@ -429,7 +429,7 @@ function initializeApp() {
       <div class="card-info">
         <p>${card.name} [<span class="count">${card.count}</span>]</p>
         <div class="button-container">
-          <button class="remove-button" onclick="removeFromDeck('${card.id}')">Remove 1</button>
+          <button class="remove-button" onclick="removeFromDeck('${card.id}')">-1</button>
         </div>
       </div>
       <div class="card-stack">
