@@ -480,6 +480,10 @@ Media Queries
     gap: 20px;
     width: 100%;
   }
+
+  #see-deck-button {
+    display: none;
+  }
 }
 
 /* ======================
