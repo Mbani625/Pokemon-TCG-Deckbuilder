@@ -178,4 +178,6 @@ function attachOverlayListeners() {
 }
 
 // Call this after rendering cards
-attachOverlayListeners();
+document.addEventListener("DOMContentLoaded", () => {
+  attachOverlayListeners();
+});

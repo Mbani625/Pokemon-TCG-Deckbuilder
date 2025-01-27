@@ -43,6 +43,10 @@ main {
   position: relative;
 }
 
+img {
+  pointer-events: auto;
+}
+
 li {
   margin: 5px;
   text-align: left;
@@ -328,6 +332,7 @@ Card Layout
   overflow: visible; /* Ensure the card container allows stacked cards to display fully */
   padding: 10px; /* Add extra padding to account for taller stacks */
   border-radius: 8px;
+  pointer-events: auto;
 }
 
 .card img {
@@ -345,6 +350,7 @@ Card Layout
   flex-direction: column;
   align-items: center;
   margin-bottom: 10px; /* Add spacing between card stack and card info */
+  pointer-events: auto;
 }
 
 .stacked-card {
