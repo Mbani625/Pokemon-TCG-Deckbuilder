@@ -158,8 +158,10 @@ async function displayCardOverlay(cardId, imageUrl) {
 // Add Event Listeners to All Images
 function attachOverlayListeners() {
   const images = document.querySelectorAll("img");
+
   images.forEach((image) => {
-    image.addEventListener("click", (event) => {
+    const handleEvent = (event) => {
+      event.preventDefault(); // Prevent default touch/click behavior
       const cardElement = image.closest(".card, .card-stack");
       if (!cardElement) return;
 
@@ -167,7 +169,11 @@ function attachOverlayListeners() {
       const imageUrl = image.src;
 
       displayCardOverlay(cardId, imageUrl);
-    });
+    };
+
+    // Add listeners for both click and touchstart
+    image.addEventListener("click", handleEvent);
+    image.addEventListener("touchstart", handleEvent);
   });
 }
 
