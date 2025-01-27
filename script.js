@@ -97,6 +97,12 @@ cardNameInput.addEventListener("input", () => {
   const query = cardNameInput.value.trim().toLowerCase();
   autocompleteResults.innerHTML = ""; // Clear previous results
 
+  // Position the autocomplete box below the input
+  const inputRect = cardNameInput.getBoundingClientRect();
+  autocompleteResults.style.top = `${inputRect.bottom}px`;
+  autocompleteResults.style.left = `${inputRect.left}px`;
+  autocompleteResults.style.width = `${inputRect.width}px`;
+
   if (query.length < 2) {
     autocompleteResults.style.display = "none";
     return;
@@ -108,7 +114,7 @@ cardNameInput.addEventListener("input", () => {
     .slice(0, 10);
 
   if (filteredNames.length > 0) {
-    autocompleteResults.style.display = "inline-block";
+    autocompleteResults.style.display = "block";
     filteredNames.forEach((name) => {
       const div = document.createElement("div");
       div.className = "autocomplete-item";
@@ -123,6 +129,20 @@ cardNameInput.addEventListener("input", () => {
     autocompleteResults.style.display = "none";
   }
 });
+
+// Close autocomplete when clicking outside or on specific buttons
+document.addEventListener("click", (event) => {
+  const isClickInside = cardNameInput.contains(event.target) || autocompleteResults.contains(event.target);
+  if (!isClickInside) {
+    autocompleteResults.style.display = "none";
+  }
+});
+
+// Close autocomplete when clicking the search button
+searchButton.addEventListener("click", () => {
+  autocompleteResults.style.display = "none";
+});
+
 
 // Fetch Legal Sets Function
 async function fetchLegalSets(format) {
