@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deck Primer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h2>Deck Folders</h2>
+      <button id="dark-mode-toggle">🌙 Dark Mode</button>
+    </header>
+    <button id="back-to-decks" class="add-button back-button">
+      ← Back to My Decks
+    </button>
+    <div class="primer-container">
+      <h1 id="deck-title"></h1>
+      <textarea
+        id="markdown-editor"
+        placeholder="Write your primer here..."
+        rows="15"
+      ></textarea>
+      <div class="markdown-actions">
+        <button id="save-primer" class="button">Save Primer</button>
+        <button id="view-primer" class="button">View Primer</button>
+      </div>
+
+      <!-- Markdown Help Guide -->
+      <details class="markdown-guide">
+        <summary>Markdown Help</summary>
+        <ul>
+          <li>
+            <strong>Headers:</strong> Use <code>#</code> for headers (e.g.,
+            <code># Header 1</code>, <code>## Header 2</code>).
+          </li>
+          <li>
+            <strong>Bold:</strong> Use <code>**text**</code> for bold text.
+          </li>
+          <li>
+            <strong>Italic:</strong> Use <code>*text*</code> for italic text.
+          </li>
+          <li>
+            <strong>Lists:</strong> Use <code>- item</code> for unordered lists
+            and <code>1. item</code> for ordered lists.
+          </li>
+          <li>
+            <strong>Links:</strong> Use <code>[title](url)</code> for
+            hyperlinks.
+          </li>
+          <li>
+            <strong>Images:</strong> Use <code>![alt text](url)</code> for
+            images.
+          </li>
+          <li>
+            <strong>Code:</strong> Use backticks <code>`code`</code> for inline
+            code or triple backticks for code blocks.
+          </li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- Popup Modal for HTML Preview -->
+    <div id="primer-preview-modal" class="modal hidden">
+      <div class="modal-content">
+        <span id="close-modal" class="close-modal">×</span>
+        <div id="markdown-preview"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="primer.js"></script>
+  </body>
+</html>

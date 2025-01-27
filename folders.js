@@ -102,8 +102,10 @@ function showDeckDialog(deckName, deck) {
   // Primer button
   const primerButton = document.getElementById("primer-btn");
   primerButton.onclick = () => {
-    alert(`Opening primer for "${deckName}"...`);
-    // Placeholder: Add navigation logic for the Primer page
+    const primerPageUrl = `primer.html?deckName=${encodeURIComponent(
+      deckName
+    )}`;
+    window.location.href = primerPageUrl; // Navigate to the primer page with deck name
   };
 
   // Close button
