@@ -19,44 +19,59 @@
       <section id="search-section">
         <h2>Card Search</h2>
         <div id="card-search-bar">
+          <label>Card Name:</label>
           <input
             type="text"
             id="card-name-input"
             placeholder="Card Name (Autocomplete)"
           />
           <div id="autocomplete-results"></div>
-          <select id="type-filter">
-            <option value="">All Types</option>
-            <option value="Grass">Grass</option>
-            <option value="Fire">Fire</option>
-            <option value="Water">Water</option>
-            <option value="Lightning">Lightning</option>
-            <option value="Psychic">Psychic</option>
-            <option value="Fighting">Fighting</option>
-            <option value="Darkness">Darkness</option>
-            <option value="Metal">Metal</option>
-            <option value="Fairy">Fairy</option>
-            <option value="Dragon">Dragon</option>
-            <option value="Colorless">Colorless</option>
-          </select>
+            <label for="card-type-select">Card Type:</label>
+            <select id="card-type-select">
+              <option value="pokemon">Pokémon</option>
+              <option value="trainer">Trainer</option>
+              <option value="energy">Energy</option>
+            </select>
+            <label for="type-filter">Type:</label>
+            <select id="type-filter">
+              <!-- Pokémon types are the default -->
+              <option value="fire">Fire</option>
+              <option value="water">Water</option>
+              <option value="grass">Grass</option>
+              <option value="electric">Electric</option>
+              <option value="psychic">Psychic</option>
+              <option value="fighting">Fighting</option>
+              <option value="dark">Dark</option>
+              <option value="steel">Steel</option>
+              <option value="fairy">Fairy</option>
+              <option value="dragon">Dragon</option>
+              <option value="normal">Normal</option>
+            </select>
+            <label>Format:</label>
           <select id="format-select">
             <option value="standard">Standard</option>
             <option value="expanded">Expanded</option>
             <option value="unlimited">Unlimited</option>
           </select>
-          <select id="card-type-select">
-            <option value="pokemon">Pokémon</option>
-            <option value="trainer">Trainer</option>
-            <option value="energy">Energy</option>
-          </select>
+          
           <button id="search-button">Search</button>
         </div>
         <div id="results-section">
+          <div id="search-header">
           <h2>Search Results <span id="results-count">(0)</span></h2>
+          <div id="sort-options">
+            <label for="sort-dropdown">Sort by:</label>
+            <select id="sort-dropdown">
+              <option value="releaseDate" selected>Most Recent</option>
+              <option value="name">Name</option>
+              <option value="setId">Set ID + Card Number</option>
+            </select>
+          </div>
+        </div>
           <div id="results-grid"></div>
         </div>
       </section>
-
+      
       <!-- Deck Section -->
       <section id="deck-section">
         <h2>Your Deck</h2>
@@ -96,7 +111,10 @@
         </div>
       </div>
     </main>
-    <button id="back-to-top" class="back-to-top" title="Go to top">↑</button>
+    <div id="navigation-buttons">
+      <button id="go-to-top-button" onclick="scrollToTop()">Back to Top</button>
+      <button id="go-to-deck-button" onclick="scrollToDeck()">Your Deck</button>
+    </div>
     <script>
       const deckGrid = document.getElementById("deck-grid");
     </script>

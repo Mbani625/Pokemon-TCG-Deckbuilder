@@ -153,42 +153,134 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// Define the options for each card type
+const typeOptions = {
+  pokemon: [
+    "fire", "water", "grass", "electric", "psychic", "fighting", "dark",
+    "steel", "fairy", "dragon", "normal",
+  ],
+  trainer: [
+    "supporter", "stadium", "item", "tool",
+  ],
+  energy: [
+    "basic", "special",
+  ],
+};
+
+// Populate the type dropdown based on the selected card type
+function updateTypeDropdown(cardType) {
+  const typeFilter = document.getElementById("type-filter");
+  typeFilter.innerHTML = ""; // Clear existing options
+
+  if (typeOptions[cardType]) {
+    typeOptions[cardType].forEach((type) => {
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = type.charAt(0).toUpperCase() + type.slice(1); // Capitalize first letter
+      typeFilter.appendChild(option);
+    });
+  }
+}
+
+// Listen for changes in the card type dropdown
+document.getElementById("card-type-select").addEventListener("change", (e) => {
+  const selectedType = e.target.value;
+  updateTypeDropdown(selectedType);
+});
+
+// Initialize with the default Pokémon types
+document.addEventListener("DOMContentLoaded", () => {
+  updateTypeDropdown("pokemon");
+});
+
+// Sort and display the search results
+function sortAndDisplayResults(cards, sortBy) {
+  // Sorting logic
+  if (sortBy === "name") {
+    cards.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortBy === "setId") {
+    cards.sort((a, b) => {
+      if (a.set.id !== b.set.id) {
+        return a.set.id.localeCompare(b.set.id);
+      }
+      return parseInt(a.number) - parseInt(b.number);
+    });
+  } else if (sortBy === "releaseDate") {
+    // Sort by release date (descending)
+    cards.sort((a, b) => {
+      const dateA = new Date(a.set.releaseDate || "1900-01-01");
+      const dateB = new Date(b.set.releaseDate || "1900-01-01");
+      return dateB - dateA; // Newest first
+    });
+  }
+
+  displaySearchResults(cards);
+}
+
+// Attach event listener to the dropdown
+document.getElementById("sort-dropdown").addEventListener("change", (e) => {
+  const sortBy = e.target.value;
+  const currentCards = JSON.parse(localStorage.getItem("lastSearchResults")); // Assuming results are stored
+  if (currentCards) {
+    sortAndDisplayResults(currentCards, sortBy);
+  }
+});
+
 // Search Function
 searchButton.addEventListener("click", async () => {
-  resultsGrid.innerHTML = "";
+  resultsGrid.innerHTML = ""; // Clear existing results
   const resultsCount = document.getElementById("results-count");
   resultsCount.textContent = "(0)";
 
+  // Collect filter inputs
   const pokemonName = cardNameInput.value.trim();
   const format = formatSelect.value;
-  const cardType = cardTypeSelect.value; // Current filter for supertype
-  const selectedType = document.getElementById("type-filter").value; // New type filter
+  const cardType = document.getElementById("card-type-select").value;
+  const selectedType = document.getElementById("type-filter").value;
 
   try {
-    // Base query
+    // Ensure format is included in the query
     let query = `legalities.${format}:legal AND supertype:${cardType}`;
 
-    // Add name filter if provided
-    if (pokemonName) {
-      query += ` AND name:"${pokemonName}"`;
-    }
+    // Add additional filters based on card type
+    if (pokemonName) query += ` AND name:"${pokemonName}"`;
 
-    // Add type filter if provided
-    if (selectedType) {
+    // For Pokémon, filter by type
+    if (cardType === "pokemon" && selectedType) {
       query += ` AND types:"${selectedType}"`;
     }
 
-    // Fetch data from the API
-    const response = await fetch(
-      `https://api.pokemontcg.io/v2/cards?q=${query}`,
-      {
-        headers: { "X-Api-Key": apiKey },
-      }
-    );
-    const data = await response.json();
+    // For Trainer cards, filter by specific trainer types
+    if (cardType === "trainer" && selectedType) {
+      query += ` AND subtypes:"${selectedType}"`;
+    }
 
+    // For Energy cards, filter by basic or special
+    if (cardType === "energy" && selectedType) {
+      query += ` AND subtypes:"${selectedType}"`;
+    }
+
+    console.log("Constructed Query:", query); // Debugging: Log the constructed query
+
+    // Fetch data from the API
+    const response = await fetch(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(query)}`, {
+      headers: { "X-Api-Key": apiKey },
+    });
+
+    const data = await response.json();
     const cards = data.data;
-    displaySearchResults(cards); // Display the filtered results
+
+    if (!cards || cards.length === 0) {
+      resultsGrid.innerHTML = "<p>No cards match your search criteria in the selected format.</p>";
+      return;
+    }
+
+    // Save results for sorting purposes
+    localStorage.setItem("lastSearchResults", JSON.stringify(cards));
+
+    // Apply sorting based on the current dropdown value
+    const sortBy = document.getElementById("sort-dropdown").value || "releaseDate";
+    sortAndDisplayResults(cards, sortBy);
   } catch (error) {
     console.error("Error fetching card data:", error);
     resultsGrid.innerHTML = "<p>Failed to fetch cards. Please try again.</p>";

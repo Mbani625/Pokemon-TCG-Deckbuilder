@@ -50,17 +50,22 @@ document.getElementById("see-deck-button").addEventListener("click", () => {
 
 const backToTopButton = document.getElementById("back-to-top");
 
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 300) {
-    backToTopButton.style.display = "flex";
-  } else {
-    backToTopButton.style.display = "none";
-  }
-});
+// Smooth scroll to the top of the page
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
-backToTopButton.addEventListener("click", () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-});
+// Smooth scroll to the "Your Deck" section
+function scrollToDeck() {
+  const deckSection = document.getElementById("deck-section"); // Replace with your actual section ID
+  if (deckSection) {
+    deckSection.scrollIntoView({ behavior: "smooth" });
+  } else {
+    console.warn("Deck section not found!");
+  }
+}
+
+// Attach event listeners to buttons
+document.getElementById("go-to-top-button").addEventListener("click", scrollToTop);
+document.getElementById("go-to-deck-button").addEventListener("click", scrollToDeck);
+
