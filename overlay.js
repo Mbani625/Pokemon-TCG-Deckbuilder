@@ -27,6 +27,7 @@ async function displayCardOverlay(cardId, imageUrl) {
   expandedImage.alt = "Expanded Card";
   expandedImage.className = "expanded-image";
   cardContainer.appendChild(expandedImage);
+
   // Create a container for navigation arrows
   const navContainer = document.createElement("div");
   navContainer.className = "nav-container";
@@ -43,6 +44,7 @@ async function displayCardOverlay(cardId, imageUrl) {
 
   // Append navigation container to the card container
   cardContainer.appendChild(navContainer);
+
   // Fetch and add card details
   if (cardId) {
     try {

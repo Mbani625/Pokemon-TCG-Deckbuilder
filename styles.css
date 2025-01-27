@@ -455,6 +455,7 @@ Overlay/Expanded  Card
   max-height: 90%;
   background: #fff;
   border-radius: 8px;
+  overflow-y: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
