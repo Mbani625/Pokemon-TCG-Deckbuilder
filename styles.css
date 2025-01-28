@@ -253,6 +253,7 @@ Search Bar
   padding: 8px 10px;
   cursor: pointer;
   background-color: white;
+  color: #000000;
   transition: background-color 0.2s ease;
 }
 

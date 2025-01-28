@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const typeOptions = {
   pokemon: [
     "fire", "water", "grass", "electric", "psychic", "fighting", "dark",
-    "steel", "fairy", "dragon", "normal",
+    "metal", "fairy", "dragon", "normal",
   ],
   trainer: [
     "supporter", "stadium", "item", "tool",
@@ -188,9 +188,18 @@ const typeOptions = {
 };
 
 // Populate the type dropdown based on the selected card type
+// Populate the type dropdown based on the selected card type
 function updateTypeDropdown(cardType) {
   const typeFilter = document.getElementById("type-filter");
   typeFilter.innerHTML = ""; // Clear existing options
+
+  if (cardType === "pokemon") {
+    // Add "All Types" option for Pokémon
+    const allTypesOption = document.createElement("option");
+    allTypesOption.value = ""; // Empty value for "All Types"
+    allTypesOption.textContent = "All Types";
+    typeFilter.appendChild(allTypesOption);
+  }
 
   if (typeOptions[cardType]) {
     typeOptions[cardType].forEach((type) => {
@@ -265,7 +274,7 @@ searchButton.addEventListener("click", async () => {
     // Add additional filters based on card type
     if (pokemonName) query += ` AND name:"${pokemonName}"`;
 
-    // For Pokémon, filter by type
+    // For Pokémon, filter by type (skip type filter if "All Types" is selected)
     if (cardType === "pokemon" && selectedType) {
       query += ` AND types:"${selectedType}"`;
     }
@@ -306,6 +315,7 @@ searchButton.addEventListener("click", async () => {
     resultsGrid.innerHTML = "<p>Failed to fetch cards. Please try again.</p>";
   }
 });
+
 
 async function showEvolutions(cardId, cardName) {
   try {
